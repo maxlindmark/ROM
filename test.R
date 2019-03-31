@@ -27,72 +27,80 @@ library(tidyr)    # v0.7.5
 
 dat <- read.csv("gädda.csv", sep = ";", dec = ",")
 
-## Make data long
-dat <- dat %>% gather(Sjö, Ton, 2:6)
+dat <- dat %>% rename(Fritidsfiske = Fritidsfiske..stora.sjöarna..inklusive.Storsjön.,
+                      `Stora sjöarna` = Stora.sjöarna)
+
+head(dat)
+dat$rec_plus <- dat$Fritidsfiske + dat$error
+dat$rec_minu <- dat$Fritidsfiske - dat$error
+
+## Make data long 
+dat <- dat %>% gather(Sjö, Ton, 2:7)
 
 head(dat)
 
-ggplot(dat, aes(År, Ton, color = Sjö)) +
-  geom_line() +
-  geom_point(data = dat, aes(År, Fritidsfiske..stora.sjöarna..inklusive.Storsjön.)) + 
-NULL  
+unique(dat$Sjö)
 
-# Need to fix legend for points inside the line-legend... https://stackoverflow.com/questions/26587940/ggplot2-different-legend-symbols-for-points-and-lines
+pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
 
-# Let's first to the other layouts...
-
-# Create color pallette
-
-
-
-# read this: https://ben-williams.github.io/updated_ggplot_figures.html#fonts-and-resolution
-
-# and this: https://stackoverflow.com/questions/43345752/export-graphics-with-exact-size-and-font-size
-
-pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "D55E00")
 
 p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
-  geom_line() +
-  geom_point(data = dat, aes(År, Fritidsfiske..stora.sjöarna..inklusive.Storsjön.)) + 
+   geom_bar(data = subset(dat, Sjö == "Stora sjöarna"), 
+            aes(x = År, y = Ton), stat = "identity", color = pal[1], fill = pal[1], 
+            width = 0.7) +
+  geom_line(size = 1) +
+  geom_errorbar(data = dat, aes(x = År, ymin = rec_minu, ymax = rec_plus), 
+                show.legend = FALSE, width  = 1) +
   scale_color_manual(values = pal) +
+  
   labs(x = "", y = "Landningar (ton)") +
   ggtitle("Landningar") +
   theme_bw(base_size = 12) +
-  guides(color = guide_legend(nrow = 2, 
-                              byrow = TRUE, 
-                              title = "")) +
-  guides(color = F) +
-  
+  guides(color = guide_legend(nrow = 3, 
+                              title = "",
+                              override.aes = list(size = 1.3),
+                              keywidth = 0.3,
+                              keyheight = 0.1,
+                              default.unit = "inch")) +
+  scale_x_continuous(expand = c(0, 0)) + 
+  scale_y_continuous(expand = c(0, 0)) +
+
   theme(axis.text = element_text(size = 8),
         axis.title = element_text(size = 8),
+        axis.ticks.length = unit(0.05, "cm"),
+        axis.line = element_line(colour = "black", size = 0.3), 
         text = element_text(family = "sans"),
-        panel.background = element_rect(fill = "white", colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        plot.title = element_text(hjust = 0.5, margin = margin(t = 10, b = -20),
+        panel.border = element_blank(),
+        plot.title = element_text(hjust = 0.5, margin = margin(b = -13),
                                   size = 9.6, face = "bold"),
-        legend.position = "bottom", 
-        legend.text = element_text(size = 8, margin = margin(l = -5), hjust = 0), 
-        element_line(size = 0.2),
-        aspect.ratio = 1) +
+        legend.position = c(0.5, -0.25), 
+        legend.text = element_text(size = 8),
+        legend.justification = "bottom", 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.key = element_rect(fill = "transparent"),
+        aspect.ratio = 1,
+        plot.margin = unit(c(5.5, 5.5, 20, 5.5), "points")) +
   NULL  
 
 p
 
 ggsave("fig_test2.tiff", plot = p, dpi = 300, width = 8, height = 8, units = "cm")
 
-# Looks sort of OK with font sizes.. Need to check: 
 
+#### TO DO ####
+# axis tick labels (year and tonnes ?
 # axis width (currently 0.2) 
-# legend key spacing (much tighter)
-# I need to make all as points likely, and then add lines with a subset? or read the link above..
-# ggtitle margin
-# add errorbars
-# can probably increase line and point size slightly
-# number of ticks for years and landings (start and end point e.g.)
-# top and right axis color white
-# 
+# let color follow order of data:
+# Read this on reorder and coloring: https://stackoverflow.com/questions/38131596/ggplot2-geom-bar-how-to-keep-order-of-data-frame
+# and this: https://stackoverflow.com/questions/3253641/change-the-order-of-a-discrete-x-scale
+# make the raw data long and clean, do not want the user to do that
 
+# See what the plot looks like when I don't have that many levels. Do margins look ok?
 
+## When cleaning up this script:
 # when I'm finsihed I'll read this: https://stackoverflow.com/questions/55426796/set-defaults-traits-for-guide-colorbar
+
+
 
