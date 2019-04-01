@@ -44,6 +44,19 @@ unique(dat$Sjö)
 
 pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
 
+## Now we need to tell ggplot to plot to use the order of the data and not the alphabetical order
+
+unique(dat$Sjö)
+
+dat$Sjö <- as.factor(dat$Sjö)
+
+dat$Sjö <- factor(dat$Sjö,
+                  levels = c("Stora sjöarna", 
+                             "Vänern", 
+                             "Vättern", 
+                             "Mälaren", 
+                             "Hjälmaren", 
+                             "Fritidsfiske"))
 
 p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
    geom_bar(data = subset(dat, Sjö == "Stora sjöarna"), 
@@ -56,7 +69,6 @@ p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
   
   labs(x = "", y = "Landningar (ton)") +
   ggtitle("Landningar") +
-  theme_bw(base_size = 12) +
   guides(color = guide_legend(nrow = 3, 
                               title = "",
                               override.aes = list(size = 1.3),
@@ -65,7 +77,7 @@ p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
                               default.unit = "inch")) +
   scale_x_continuous(expand = c(0, 0)) + 
   scale_y_continuous(expand = c(0, 0)) +
-
+  theme_bw(base_size = 12) +
   theme(axis.text = element_text(size = 8),
         axis.title = element_text(size = 8),
         axis.ticks.length = unit(0.05, "cm"),
@@ -97,6 +109,13 @@ ggsave("fig_test.tiff", plot = p, dpi = 300, width = 8, height = 8, units = "cm"
 # Read this on reorder and coloring: https://stackoverflow.com/questions/38131596/ggplot2-geom-bar-how-to-keep-order-of-data-frame
 # and this: https://stackoverflow.com/questions/3253641/change-the-order-of-a-discrete-x-scale
 # make the raw data long and clean, do not want the user to do that
+
+## what differs and should probably still difer?
+# note that I now have lines and bars for the main. That makes the life much easier, because the way ggplot (and thus R) automates things is that things are grouped. Otherwise we anyway have to do each species manually. But note tough even some minor manual things may be OK, because its an improvement from current one where everything is manual.
+
+# see point about lines and bars. The same argument is for the Fritidsfiske. Why a point? Point, like bars, are fine, as long as they also can have a line! This is for the legend, and otherwise all species would need a unique script, and we'd have a lot of un-linked scripts floating around with unique tweaks
+
+# to have the ggtitle inside the plot.. does that affect axis? I noticed axis is short by default, and we don't want to manually set that.
 
 # See what the plot looks like when I don't have that many levels. Do margins look ok?
 
