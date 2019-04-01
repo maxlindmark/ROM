@@ -14,11 +14,12 @@ rm(list = ls())
 # install.packages("Rcurl")
 
 # *--update package versions if needed!--* 
-# packageVersion("dplyr")
+# packageVersion("tidyr")
 library(devtools) # v2.0.1
 library(ggplot2)  # v3.1.0
 library(RCurl)    # v1.95.4.10
-library(tidyr)    # v0.7.5    
+library(tidyr)    # v0.8.1    
+library(dplyr)    # v0.7.5
 
 ## Read in data, using Pike as an example
 
@@ -47,7 +48,7 @@ pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
 p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
    geom_bar(data = subset(dat, Sjö == "Stora sjöarna"), 
             aes(x = År, y = Ton), stat = "identity", color = pal[1], fill = pal[1], 
-            width = 0.7) +
+            width = 0.6) +
   geom_line(size = 1) +
   geom_errorbar(data = dat, aes(x = År, ymin = rec_minu, ymax = rec_plus), 
                 show.legend = FALSE, width  = 1) +
@@ -86,7 +87,7 @@ p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
 
 p
 
-ggsave("fig_test2.tiff", plot = p, dpi = 300, width = 8, height = 8, units = "cm")
+ggsave("fig_test.tiff", plot = p, dpi = 300, width = 8, height = 8, units = "cm")
 
 
 #### TO DO ####
@@ -99,8 +100,6 @@ ggsave("fig_test2.tiff", plot = p, dpi = 300, width = 8, height = 8, units = "cm
 
 # See what the plot looks like when I don't have that many levels. Do margins look ok?
 
-## When cleaning up this script:
-# when I'm finsihed I'll read this: https://stackoverflow.com/questions/55426796/set-defaults-traits-for-guide-colorbar
 
 
 
