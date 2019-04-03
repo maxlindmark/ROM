@@ -2,10 +2,16 @@
 # 2019.03.31: Max Lindmark
 #
 # - Test script for making figures according to their standards with ggplot
+#
+# A. READ LIBRARIES AND DATA
+#
+# B. TEST THE MOST COMPLEX FIGURE
+#
+# C. USE THE SAME CODE TO PRODUCE THE SIMPLEST FIGURE
 #      
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-#==== LOAD LIBRARIES AND READ DATA ====
+#==== A. LOAD LIBRARIES AND READ DATA ====
 rm(list = ls())
 
 ## Load packages
@@ -19,7 +25,6 @@ rm(list = ls())
 # .libPaths()
 # .libPaths("C:/Program Files/R/R-3.5.0/library")
 
-# *--update package versions if needed!--* 
 # packageVersion("scales")
 library(devtools) # v2.0.1
 library(ggplot2)  # v3.1.0
@@ -68,7 +73,7 @@ dat$Sjö <- factor(dat$Sjö, # rename here, don't call it Sjö
                              "Hjälmaren", 
                              "Fritidsfiske"))
 
-#======== A. MOST COMPLEX PLOT ========
+#==== B. MOST COMPLEX PLOT ====
 
 p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
   geom_bar(data = subset(dat, Sjö == "Stora sjöarna"), 
@@ -118,7 +123,7 @@ p
 ggsave("fig_full.tiff", plot = p, dpi = 300, width = 8, height = 8, units = "cm")
 
 
-#======== B. SIMPLE PLOT FROM FULL (COMPLEX) CODE ========
+#==== C. SIMPLE PLOT FROM FULL (COMPLEX) CODE ====
 # code from old complex plot, need to update to make sure it's still playing with the 
 # modified version of the complex plot (i.e. the palette hacks)
 
