@@ -51,7 +51,8 @@ dat$rec_minu <- dat$Fritidsfiske - dat$error
 dat <- dat %>% gather(Sjö, Ton, 2:7)
 
 ## write to csv and to show how the authors should prepare the data
-write.csv(dat, "pike.csv")
+#dat <- dat %>% rename(Område = Sjö)
+#write.csv(dat, "pike.csv")
 
 head(dat)
 
