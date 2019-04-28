@@ -44,7 +44,8 @@ x
 ## 2. Read in data
 ```{r}
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
-dat <- read.csv(text=getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"))
+dat <- read.csv(text
+                =getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"))
 
 head(dat, 25)
 
