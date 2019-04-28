@@ -1,0 +1,58 @@
+---
+title: "Making figures for RoM in R"
+author: "Max Lindmark"
+date: "28 april 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+The main argument for using R to create RoM figures is to standardize figures across species and to do so while limiting repetive work. This is a work in progress so any feedback on this document or the figures are highly appreciated!
+
+This document contains instructions and code for creating the four types of basic plots that will be used in RoM, these will be described in their own sections below. I have chosen data for pike (*Esox lucious*) as an example, because it has all potential data for a RoM species (recreational, multiple areas, error bars etc.). These data have been uploaded on github: https://github.com/maxlindmark/ROM, and below is a piece of code that reads it into your session.
+
+Prerequisitics: 1) R-studio is strongly preferred as it allows you to work in so called projects where you can set a relative working directory. 2) Prepare your data so that it is structured in the same way as the example below.
+
+It is an advantage if you know some Basic R. R-code is text with grey background. You can copy these chunks of code to a new R-script or directly into the console in R-studio.
+
+## 1. Load libraries
+```{r message=FALSE, warning=FALSE}
+rm(list = ls()) # clear the workspace from objects
+
+# Provide package names
+pkgs <- c("devtools", "ggplot2", "RCurl", "RCurl", "tidyr", "dplyr", "scales")
+
+# Install packages
+#install.packages(pkgs) # remove the hashtag if you already have them installed
+
+# Load all packages
+invisible(lapply(pkgs, function(x) require(x, character.only = T, quietly = T)))
+
+# Print package version
+x <- devtools::session_info(pkgs = pkgs)
+x <- as.data.frame(x$packages)
+x <- dplyr::filter(x, package %in% pkgs) %>%
+dplyr::select(-`*`, -date, -source) %>%
+dplyr::arrange(package)
+x
+```
+
+## 2. Read in data
+```{r}
+# Go to https://github.com/maxlindmark/ROM to view the data in the browser
+dat <- read.csv(text=getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"))
+
+head(dat, 25)
+
+# Read in the palette we are going to use
+pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
+```
+
+
+
+
+

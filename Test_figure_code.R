@@ -50,6 +50,9 @@ dat$rec_minu <- dat$Fritidsfiske - dat$error
 ## Make data long 
 dat <- dat %>% gather(Sjö, Ton, 2:7)
 
+## write to csv and to show how the authors should prepare the data
+write.csv(dat, "pike.csv")
+
 head(dat)
 
 unique(dat$Sjö)
@@ -57,7 +60,7 @@ unique(dat$Sjö)
 pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
 
 # This palette is used to make the line white for the rec fisheries. I use the other to get the basic palette in the legend though (most likely). This palette must give "white" in the right order, i.e. the order so that it matches rec fish in the data!
-pal_line <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "white")
+#pal_line <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "white")
 
 ## Now we need to tell ggplot to plot to use the order of the data and not the alphabetical order
 
@@ -79,20 +82,23 @@ p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
   geom_bar(data = subset(dat, Sjö == "Stora sjöarna"), 
             aes(x = År, y = Ton), stat = "identity", color = pal[1], fill = pal[1], 
             width = 0.6) +
-  geom_line(size = 1) +
+  geom_line(data = dat, aes(År, Ton, color = Sjö, alpha = Sjö), 
+            size = 1) + # just size in this argument before
   geom_point(data = subset(dat, Sjö == "Fritidsfiske"), 
              aes(År, Ton, fill = Sjö), size = 2, color = pal[6]) +
   geom_errorbar(data = subset(dat, Sjö == "Fritidsfiske"), 
                 aes(x = År, ymin = rec_minu, ymax = rec_plus), 
                 show.legend = FALSE, width  = 1, color = pal[6]) +
-  scale_color_manual(values = pal_line) +
+  scale_color_manual(values = pal) +
+  scale_alpha_manual(values = c(1, 1, 1, 1, 1, 0)) +
   labs(x = "", y = "Landningar (ton)") +
   ggtitle("Landningar") +
-  guides(fill = FALSE,
+  guides(fill  = FALSE,
+         alpha = FALSE,
          color = guide_legend(nrow = 3, 
                               title = "",
                               override.aes = list(size = 1.3, 
-                                                  color = pal_line), # set pal if you want color in legend for Fritidsfiske, but then it's a line!
+                                                  color = pal),
                               keywidth = 0.3,
                               keyheight = 0.1,
                               default.unit = "inch")) +
