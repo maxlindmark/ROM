@@ -45,9 +45,10 @@ x
 ```{r}
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
 dat <- read.csv(text
-                =getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"))
+                = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"),
+                header = TRUE, sep = ";", encoding = "ISO-8859-1")
 
-head(dat, 25)
+head(dat, 20)
 
 # Read in the palette we are going to use
 pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
