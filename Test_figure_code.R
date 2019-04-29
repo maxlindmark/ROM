@@ -84,7 +84,7 @@ p <- ggplot(dat, aes(År, Ton, color = Sjö)) +
             aes(x = År, y = Ton), stat = "identity", color = pal[1], fill = pal[1], 
             width = 0.6) +
   geom_line(data = dat, aes(År, Ton, color = Sjö, alpha = Sjö), 
-            size = 1) + # just size in this argument before
+            size = 1) + 
   geom_point(data = subset(dat, Sjö == "Fritidsfiske"), 
              aes(År, Ton, fill = Sjö), size = 2, color = pal[6]) +
   geom_errorbar(data = subset(dat, Sjö == "Fritidsfiske"), 
