@@ -22,22 +22,27 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
+*First, this is a first draft and a work in progress so any feedback on this document or the figures are highly appreciated!*
 
 ### Why R?
-The main argument for using code to create RoM figures is to standardize figures across species and to do so while limiting repetive work (you only need to write a script once!). These figures here are made with the package ggplot2, which is a very powerful tool for making multilevel figures and allows for easy modification via the theme-function. 
+The main argument for using code to create RoM figures is to standardize them across species and to do so while limiting repetitive work (you only need to write a script once!). These figures here are made with the package *ggplot2*, which is a very powerful tool for making multilevel figures and allows for easy modification via the theme-function. 
 
 ### Basic prerequisitis
-It is an advantage if you know some Basic R. I strongly recommend using R-studio and working in a so called R-studio project. When you open R, click File/New Project/New Directory and specify where you want to save it. Open the "your_project_name".Rproj and click File/New Script and save that in your project folder. And that's it! The best thing is that now all your search paths are relative and not absolute. If you want to read in data, put the data inside the project folder and you don't have to specify the full search path ("C:/R/RoM/data-file.csv"), it's enought you give the name of the file only (more on that below!). Another benefit with a relative search path is that I don't have to worry about setting the working directory and changing the directory each time I try to rerun anyone elses script. 
+It is an advantage if you know some basic R. I strongly recommend using R-studio and working in a so called R-studio project (but it is not needed to reproduce this code). To create a project, open R-studio, click File/New Project/New Directory and specify where you want to save it. Open the *"your_project_name".Rproj* and click File/New Script and save that in your project folder. And that's it! The best thing is that now all your search paths are relative and not absolute. If you want to read in data, put the data inside the project folder and you don't have to specify the full search path (*"C:/R/RoM/data-file.csv"* or whatever), it's enough you give the name of the file only (more on that below!). Another benefit with a relative search path is that I don't have to worry about setting the working directory and changing the directory each time I try to rerun anyone elses script. 
 
-Lastly, this is an R Markdown document. This means R-code is text with grey background. You can copy these chunks of code to a new R-script in your R-studio project.
+Lastly, this is an R Markdown document. This means R-code is text with grey background. You can copy these chunks of code to a new R-script in your R-studio project and run it from there.
 
 ### What does this script do?
-This script gives an example of how you can use R to create standardize figures in R, and save them in a standardized resolution as a .tiff, ready to be used without further editing.
+This script gives an example of how you can use R to create standardized figures in R, and save them in a given resolution as a *.tiff*, ready to be used without further editing.
 
-I have chosen data for pike (*Esox lucious*) as an example, because it has all potential data for a RoM species (recreational, multiple areas, error bars etc.). These data have been uploaded on github: https://github.com/maxlindmark/ROM
+I have chosen data for freshwater pike (*Esox lucious*) to illustrate how you can use this code, because it has all potential data for a RoM species (recreational, multiple areas, error bars etc.). These data have been uploaded on github: [github](https://github.com/maxlindmark/ROM)
+
 
 ### How do I use this for my species?
-Most basic RoM figures that all species have in some form can be grouped into three different categories. Each category will have its own script. Once you identify the best category for your species you **should not have to modify the actual plotting code**, instead the aim to is to only pre-define you vaiables. Do not worry! Instructions for how to do that will be in the described below! The categories are:
+Most basic RoM figures that all species have in some form can be grouped into three different categories. Each category will have its own script. Once you identify the best category for your species you **should not have to modify the actual plotting code**, instead the aim to is to
+
++ 1. pre-define your variables
++ 2. put hash tags in front of stuff you don't need! E.g. if you don't have points to plot, make sure to put a hash tag before the geom_point()-function, which plots points. But do not worry! Instructions for how to do that will be in the described below! The categories are:
 
 + Fig. 1. Single series
 + Fig. 2. Multiple series
@@ -49,16 +54,22 @@ Check out the flowchart below to help identify which plot you need.
 
 Once you identify which plot type you will use, you can read about how to prepare your data to use the script. A standardized way of saving data is key for making any kind of standardized script! The data structure is described in section **Preparation**.
 
-This is a first draft and a work in progress so any feedback on this document or the figures are highly appreciated!
-
 ## Preparation
 ### Load libraries
 Before starting, we need to install a few packages:
-```{r message=FALSE, warning=FALSE}
+```{r read packages, message=FALSE, warning=FALSE}
 rm(list = ls()) # clear the workspace from objects
 
 # Provide package names
-pkgs <- c("devtools", "ggplot2", "RCurl", "RCurl", "tidyr", "dplyr", "scales", "png", "knitr")
+pkgs <- c("devtools", 
+          "ggplot2", 
+          "RCurl", 
+          "RCurl", 
+          "tidyr", 
+          "dplyr", 
+          "scales", 
+          "png", 
+          "knitr")
 
 # Install packages
 #install.packages(pkgs) # remove the hashtag if don't have them installed
@@ -69,7 +80,7 @@ invisible(lapply(pkgs, function(x) require(x, character.only = T, quietly = T)))
 
 ### Load example data and clean it up!
 Now let's read in the example data (freshwater pike):
-```{r}
+```{r read data}
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
 dat <- read.csv(
   text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"), 
@@ -77,29 +88,29 @@ dat <- read.csv(
 ```
 
 For your own species, the code would typically look like this if you put the data inside your R Project folder:
-```{r, eval=FALSE}
+```{r read your own data, eval=FALSE}
 dat <- read.csv("pike.csv", sep = ";")
 ```
 
 Inspect the data:
-```{r}
+```{r inspect}
 head(dat)
 ```
 
-Users will have different encoding which affects how certain characters are read. Instead of forcing everyone to use the same encoding, I'm showing you how to rename columns. It is **very** important that you use these column names because they will determine which level gets which colour and line (if you insist on other column names you have to modify the plot code)!
-```{r}
+Users will have different encoding which affects how certain characters are read. Instead of forcing everyone to use the same encoding, I'm showing you how to rename columns. It is **VERY** important that you use these column names because they will determine which level gets which colour and line (if you insist on other column names you have to modify the plot code)!
+```{r rename columns}
 dat <- dat %>% rename(Område = Omr.e5.de,
                       År     = X.c5.r)
 head(dat)
 ```
 
 Columns look better! But we also need to modify the actual levels of the column (i.e. the levels of the lakes). You can see which lakes are in the data by typing: 
-```{r}
+```{r check levels}
 levels(dat$Område)
 ```
 
-Clearly we also need to correct the names of the levels, similar to how we did for column names. This is because the beauty of ggplot is that all important information in the plot will be inherited from the data.
-```{r}
+Clearly we also need to correct the names of the levels, similar to how we did for column names. This is because the beauty of *ggplot* is that all important information in the plot will be inherited from the data.
+```{r rename levels}
 levels(dat$Område) <- c("Fritidsfiske", 
                         "Hjälmaren", 
                         "Mälaren", 
@@ -109,8 +120,8 @@ levels(dat$Område) <- c("Fritidsfiske",
 head(dat)
 ```
 
-There is one last thing you might need to do with the data before proceeding with plotting, and that is to change the order of the levels in the data. When plotting, ggplot sets the levels of the data in alphabetical order, but here we want a specific order: the first "level" should correspond to the total and the last to any special level, such as the recreational data.
-```{r}
+There is one last thing you might need to do with the data before proceeding with plotting, and that is to change the order of the levels in the data. When plotting, *ggplot* sets the levels of the data in alphabetical order, but here we want a specific order: the first "level" should correspond to the total and the last to any special level, such as the recreational data.
+```{r rearrange levels}
 dat$Område <- factor(dat$Område,
                      levels = c("Stora sjöarna", 
                                 "Vänern", 
@@ -120,19 +131,16 @@ dat$Område <- factor(dat$Område,
                                 "Fritidsfiske"))
 ```
 
-Now the data look much better! You might not need to do these modification on your own data. **But you need** to make sure it is strutured in the same way, that is:
+Now the data look much better! You might not need to do these modification on your own data. **But you need** to make sure it is structured in the same way, that is: **1 row = 1 observation (not multiple columns for different areas)**
 
-+ 1 row = 1 observation (not multiple columns for different areas)
-+ first level (see last code chunk) corresponds to total biomass and last one is special series
-
-### Define ggplot theme 
+### Define *ggplot* theme 
 Now that you have loaded and cleaned up your or the example data, we can move on with general plotting settings. First the color palette:
-```{r}
+```{r set palette}
 pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
 ```
 
 Second, we define the theme we will use for all plots. This is made to match as closely as possible to the RoM style. This applies to all figures styles. In the future this function should be sourced but here I show it in full. Make sure you copy paste this function and run it. 
-```{r}
+```{r define theme}
 theme_rom <- function(base_size = 12, base_family = "") {
   theme_bw(base_size = 12, base_family = "") +
     theme(
@@ -163,58 +171,58 @@ theme_rom <- function(base_size = 12, base_family = "") {
 
 ## Let's start making figures!
 ## Fig. 1. Single series
-```{r, fig.width=3.14961, fig.height=3.14961, echo=FALSE, fig.align='center', fig.cap='Siklöja in Mälaren (RoM 2018) - example of a single-series plot'}
+```{r plot sikloja, fig.width=3.14961, fig.height=3.14961, echo=FALSE, fig.align='center', fig.cap='Siklöja in Mälaren (RoM 2018) - example of a single-series plot'}
 sikloja_path <- "sikloja.png"
 include_graphics(sikloja_path)
 ```
 
-For illustration purposes, we will now pretend our example pike dataset only is a single series, by filtering it to only contain the area "Stora Sjöarna". If you have Fig.1 situation, your data might look something like this, with one column for year, one for area and one for tonnes.
-```{r, message=FALSE, warning=FALSE}
- dat1 <- dat %>% 
-  select(År, Ton, Område) %>% 
+For illustration purposes, we will now pretend our example pike data set only is a single series, by filtering it to only contain the area "Stora Sjöarna". If you have a "Fig.1 situation"", your data might look something like this, with one column for year, one for area and one for tonnes.
+```{r subset single level, message=FALSE, warning=FALSE}
+dat1 <- dat %>% 
+  select(År, Biomassa, Område) %>% 
   filter(Område == "Stora sjöarna")
+
+head(dat1)
 ```
 
-We now need to specify y-axis titles and plot title. **This is what is meant by predifing variables! Instead of changing the plotting code we define what we want it to plot on the axis, for instance**. For the pike data we can set them as:
-```{r}
+We now need to specify the **y-axis title** and **plot title**. This is what is meant by predefining variables! Instead of changing the plotting code we define what we want it to plot on the axis, for instance**. For the pike data we can set them as:
+```{r set variables p1}
 y_axis <- c("Landningar (ton)")
 title  <- c("Landningar")
 ```
 
-Now go ahead and create the plot
-```{r, message=FALSE, warning=FALSE}
-p1 <- ggplot(dat1, aes(År, Ton)) +
+Now go ahead and create the plot:
+```{r set plot 1, message=FALSE, warning=FALSE}
+p1 <- ggplot(dat1, aes(År, Biomassa)) +
   geom_bar(data = dat1, 
-           aes(x = År, y = Ton), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = År, y = Biomassa), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
-  #scale_color_manual(values = pal) +
-  scale_alpha_manual(values = c(1, 1, 1, 1, 1, 0)) +
   labs(x = "", y = y_axis) + # here's where the axis title is called
   ggtitle(title) +           # here's where the title is called
   guides(color  = FALSE) +
   scale_x_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 6)) +
   scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 5)) +
-  theme_rom()
+  theme_rom()                # here we call our predefined theme
 ```
 
-```{r, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a single-series plot using R'}
+```{r plot 1, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a single-series plot using R'}
 p1
 ```
 
 Save the file (to your working directory)
-```{r, message=FALSE, warning=FALSE, results="hide"}
+```{r save p1, message=FALSE, warning=FALSE, results="hide"}
 ggsave("Fig_1.tiff", plot = p1, dpi = 300, width = 8, height = 8, units = "cm")
 ```
 
 
 ## Fig. 2. Multiple series
-```{r, fig.width=3.14961, fig.height=3.14961, echo=FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a multiple-series plot'}
+```{r plot gadda, fig.width=3.14961, fig.height=3.14961, echo=FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a multiple-series plot'}
 gadda_path <- "gadda.png"
 include_graphics(gadda_path)
 ```
 
-We now need to specify y-axis titles and plot title, and in addition we need to define how mnay levels we have! For the pike data we can set them as:
-```{r}
+We now need to specify y-axis titles and plot title, and in addition we need to define how many levels we have! For the pike data we can set them as:
+```{r set variables p2}
 y_axis <- c("Landningar (ton)")
 title <- c("Landningar") 
 main_series <- c("Stora sjöarna")
@@ -223,27 +231,27 @@ special_series <- c("Fritidsfiske")
 ```
 
 Note that we in this example use multiple data series, and that one of them is is recreational fisheries that in turn has error bars. **These need to be in columns, so that we have a high (rec_plus) and a low (rec_minu) column. Note also that they are NA when the Område is not equal to recreational fisheries**
-```{r}
+```{r inspect data}
 head(dat) 
 tail(dat)
 ```
 
-
-```{r, message=FALSE, warning=FALSE}
-p2 <- ggplot(dat, aes(År, Ton, color = Område)) +
+And with that set, we can make the second figure, with multiple levels:
+```{r set plot 2, message=FALSE, warning=FALSE}
+p2 <- ggplot(dat, aes(År, Biomassa, color = Område)) +
   geom_bar(data = subset(dat, Område == main_series), 
-           aes(x = År, y = Ton), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = År, y = Biomassa), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
-  geom_line(data = dat, aes(År, Ton, color = Område, alpha = Område), 
+  geom_line(data = dat, aes(År, Biomassa, color = Område, alpha = Område), 
             size = 1) + 
-  geom_point(data = subset(dat, Område == special_series), # here we define our special series
-             aes(År, Ton, fill = Område), size = 2, color = pal[max(n_lev)]) + 
+  geom_point(data = subset(dat, Område == special_series), # here we set our special series
+             aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + 
   # above the number of level enters (max(n_lev))
   geom_errorbar(data = subset(dat, Område == special_series), 
                 aes(x = År, ymin = rec_minu, ymax = rec_plus), 
                 show.legend = FALSE, width  = 1, color = pal[max(n_lev)]) +
-  scale_color_manual(values = pal[seq(1, n_lev)]) +
   scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
+  scale_color_manual(values = pal[seq(1, n_lev)]) +
   # above we set the line between rec fisheries transparent
   labs(x = "", y = y_axis) +
   ggtitle(title) +
@@ -261,42 +269,42 @@ p2 <- ggplot(dat, aes(År, Ton, color = Område)) +
   theme_rom()
 ```
 
-```{r, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R'}
+```{r plot 2, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R'}
 p2
 ```
 
 Now save the file (to your working directory)
-```{r, message=FALSE,warning=FALSE,results="hide",eval=FALSE}
+```{r save p2, message=FALSE,warning=FALSE,results="hide",eval=FALSE}
 ggsave("Fig_2.tiff", plot = p2, dpi = 300, width = 8, height = 8, units = "cm")
 ```
 
-Let's say that you have 3 different areas and no special series and no error bars. Then you simply need to hashtag the code the plots those features. We subset the full data as an example:
-```{r}
+Let's say that you have 3 different areas and no special series and no error bars. Then you simply need to hash tag the code the plots those features. We subset the full data to select only the total and lake Mälaren as an example:
+```{r filter shorter multilevel}
 dat2 <- dat %>% 
-  select(År, Ton, Område) %>% 
+  select(År, Biomassa, Område) %>% 
   filter(Område %in% c("Stora sjöarna", "Mälaren"))
 ```
 
 We now need to update the number of levels in the data:
-```{r}
+```{r update variables}
 n_lev <- length(unique(dat2$Område)) 
 ```
 
-Repeat the general Fig. 2 plot, but remove the points and errorbars:
-```{r, message=FALSE, warning=FALSE}
-p2a <- ggplot(dat2, aes(År, Ton, color = Område)) +
+Repeat the general Fig. 2 plot, but remove the points and error bars:
+```{r set plot 2a, message=FALSE, warning=FALSE}
+p2a <- ggplot(dat2, aes(År, Biomassa, color = Område)) +
   geom_bar(data = subset(dat2, Område == main_series), 
-           aes(x = År, y = Ton), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = År, y = Biomassa), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
-  geom_line(data = dat2, aes(År, Ton, color = Område, alpha = Område), 
+  geom_line(data = dat2, aes(År, Biomassa, color = Område, alpha = Område), 
             size = 1) + 
   #geom_point(data = subset(dat, Område == special_series), # here we define our special series
-  #           aes(År, Ton, fill = Område), size = 2, color = pal[max(n_lev)]) + 
+  #           aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + 
   #geom_errorbar(data = subset(dat, Område == special_series), 
   #              aes(x = År, ymin = rec_minu, ymax = rec_plus), 
   #              show.legend = FALSE, width  = 1, color = pal[max(n_lev)]) +
-  scale_color_manual(values = pal[seq(1, n_lev)]) +
   #scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
+  scale_color_manual(values = pal[seq(1, n_lev)]) +
   labs(x = "", y = y_axis) +
   ggtitle(title) +
   guides(fill  = FALSE,
@@ -313,16 +321,12 @@ p2a <- ggplot(dat2, aes(År, Ton, color = Område)) +
   theme_rom()
 ```
 
-```{r, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R'}
+```{r plot 2a, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R'}
 p2a
 ```
 
 ### To work on:
 
 + secondary y-axis that is not a one-to-one transformation of the primary axes. Possible?
-
-+ set Ton in column name as biomass and define ton as a vector!
-+ name chunks
-+ write comments in pdf: what about aspect ratio?
 
 

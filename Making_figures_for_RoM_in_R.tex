@@ -133,44 +133,51 @@
 
 \subsection{Introduction}\label{introduction}
 
+\emph{First, this is a first draft and a work in progress so any
+feedback on this document or the figures are highly appreciated!}
+
 \subsubsection{Why R?}\label{why-r}
 
 The main argument for using code to create RoM figures is to standardize
-figures across species and to do so while limiting repetive work (you
+them across species and to do so while limiting repetitive work (you
 only need to write a script once!). These figures here are made with the
-package ggplot2, which is a very powerful tool for making multilevel
-figures and allows for easy modification via the theme-function.
+package \emph{ggplot2}, which is a very powerful tool for making
+multilevel figures and allows for easy modification via the
+theme-function.
 
 \subsubsection{Basic prerequisitis}\label{basic-prerequisitis}
 
-It is an advantage if you know some Basic R. I strongly recommend using
-R-studio and working in a so called R-studio project. When you open R,
+It is an advantage if you know some basic R. I strongly recommend using
+R-studio and working in a so called R-studio project (but it is not
+needed to reproduce this code). To create a project, open R-studio,
 click File/New Project/New Directory and specify where you want to save
-it. Open the ``your\_project\_name''.Rproj and click File/New Script and
-save that in your project folder. And that's it! The best thing is that
-now all your search paths are relative and not absolute. If you want to
-read in data, put the data inside the project folder and you don't have
-to specify the full search path (``C:/R/RoM/data-file.csv''), it's
-enought you give the name of the file only (more on that below!).
-Another benefit with a relative search path is that I don't have to
-worry about setting the working directory and changing the directory
-each time I try to rerun anyone elses script.
+it. Open the \emph{``your\_project\_name''.Rproj} and click File/New
+Script and save that in your project folder. And that's it! The best
+thing is that now all your search paths are relative and not absolute.
+If you want to read in data, put the data inside the project folder and
+you don't have to specify the full search path
+(\emph{``C:/R/RoM/data-file.csv''} or whatever), it's enough you give
+the name of the file only (more on that below!). Another benefit with a
+relative search path is that I don't have to worry about setting the
+working directory and changing the directory each time I try to rerun
+anyone elses script.
 
 Lastly, this is an R Markdown document. This means R-code is text with
 grey background. You can copy these chunks of code to a new R-script in
-your R-studio project.
+your R-studio project and run it from there.
 
 \subsubsection{What does this script
 do?}\label{what-does-this-script-do}
 
-This script gives an example of how you can use R to create standardize
-figures in R, and save them in a standardized resolution as a .tiff,
+This script gives an example of how you can use R to create standardized
+figures in R, and save them in a given resolution as a \emph{.tiff},
 ready to be used without further editing.
 
-I have chosen data for pike (\emph{Esox lucious}) as an example, because
-it has all potential data for a RoM species (recreational, multiple
-areas, error bars etc.). These data have been uploaded on github:
-\url{https://github.com/maxlindmark/ROM}
+I have chosen data for freshwater pike (\emph{Esox lucious}) to
+illustrate how you can use this code, because it has all potential data
+for a RoM species (recreational, multiple areas, error bars etc.). These
+data have been uploaded on github:
+\href{https://github.com/maxlindmark/ROM}{github}
 
 \subsubsection{How do I use this for my
 species?}\label{how-do-i-use-this-for-my-species}
@@ -179,17 +186,34 @@ Most basic RoM figures that all species have in some form can be grouped
 into three different categories. Each category will have its own script.
 Once you identify the best category for your species you \textbf{should
 not have to modify the actual plotting code}, instead the aim to is to
-only pre-define you vaiables. Do not worry! Instructions for how to do
-that will be in the described below! The categories are:
 
 \begin{itemize}
-\tightlist
+\item
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    pre-define your variables
+  \end{enumerate}
+\item
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \setcounter{enumi}{1}
+  \tightlist
+  \item
+    put hash tags in front of stuff you don't need! E.g. if you don't
+    have points to plot, make sure to put a hash tag before the
+    geom\_point()-function, which plots points. But do not worry!
+    Instructions for how to do that will be in the described below! The
+    categories are:
+  \end{enumerate}
 \item
   Fig. 1. Single series
 \item
   Fig. 2. Multiple series
 \item
-  Fig. 3. Multiple series and y-axes
+  Fig. 3. Multiple series and y-axes - \textbf{\emph{not yet
+  implemented, see end of document!}}
 \end{itemize}
 
 Check out the flowchart below to help identify which plot you need.
@@ -205,9 +229,6 @@ to prepare your data to use the script. A standardized way of saving
 data is key for making any kind of standardized script! The data
 structure is described in section \textbf{Preparation}.
 
-This is a first draft and a work in progress so any feedback on this
-document or the figures are highly appreciated!
-
 \subsection{Preparation}\label{preparation}
 
 \subsubsection{Load libraries}\label{load-libraries}
@@ -219,7 +240,15 @@ Before starting, we need to install a few packages:
 \KeywordTok{rm}\NormalTok{(}\DataTypeTok{list =} \KeywordTok{ls}\NormalTok{()) }\CommentTok{# clear the workspace from objects}
 
 \CommentTok{# Provide package names}
-\NormalTok{pkgs <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"devtools"}\NormalTok{, }\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"RCurl"}\NormalTok{, }\StringTok{"RCurl"}\NormalTok{, }\StringTok{"tidyr"}\NormalTok{, }\StringTok{"dplyr"}\NormalTok{, }\StringTok{"scales"}\NormalTok{, }\StringTok{"png"}\NormalTok{, }\StringTok{"knitr"}\NormalTok{)}
+\NormalTok{pkgs <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"devtools"}\NormalTok{, }
+          \StringTok{"ggplot2"}\NormalTok{, }
+          \StringTok{"RCurl"}\NormalTok{, }
+          \StringTok{"RCurl"}\NormalTok{, }
+          \StringTok{"tidyr"}\NormalTok{, }
+          \StringTok{"dplyr"}\NormalTok{, }
+          \StringTok{"scales"}\NormalTok{, }
+          \StringTok{"png"}\NormalTok{, }
+          \StringTok{"knitr"}\NormalTok{)}
 
 \CommentTok{# Install packages}
 \CommentTok{#install.packages(pkgs) # remove the hashtag if don't have them installed}
@@ -261,18 +290,18 @@ Inspect the data:
 \end{Shaded}
 
 \begin{verbatim}
-##   X.c5.r error rec_plus rec_minu        Omr.e5.de Ton
-## 1   1997    NA       NA       NA Stora sj<f6>arna 115
-## 2   1998    NA       NA       NA Stora sj<f6>arna 114
-## 3   1999    NA       NA       NA Stora sj<f6>arna 149
-## 4   2000    NA       NA       NA Stora sj<f6>arna 145
-## 5   2001    NA       NA       NA Stora sj<f6>arna 121
-## 6   2002    NA       NA       NA Stora sj<f6>arna 145
+##   X.c5.r error rec_plus rec_minu        Omr.e5.de Biomassa
+## 1   1997    NA       NA       NA Stora sj<f6>arna      115
+## 2   1998    NA       NA       NA Stora sj<f6>arna      114
+## 3   1999    NA       NA       NA Stora sj<f6>arna      149
+## 4   2000    NA       NA       NA Stora sj<f6>arna      145
+## 5   2001    NA       NA       NA Stora sj<f6>arna      121
+## 6   2002    NA       NA       NA Stora sj<f6>arna      145
 \end{verbatim}
 
 Users will have different encoding which affects how certain characters
 are read. Instead of forcing everyone to use the same encoding, I'm
-showing you how to rename columns. It is \textbf{very} important that
+showing you how to rename columns. It is \textbf{VERY} important that
 you use these column names because they will determine which level gets
 which colour and line (if you insist on other column names you have to
 modify the plot code)!
@@ -286,13 +315,13 @@ modify the plot code)!
 \end{Shaded}
 
 \begin{verbatim}
-##     År error rec_plus rec_minu           Område Ton
-## 1 1997    NA       NA       NA Stora sj<f6>arna 115
-## 2 1998    NA       NA       NA Stora sj<f6>arna 114
-## 3 1999    NA       NA       NA Stora sj<f6>arna 149
-## 4 2000    NA       NA       NA Stora sj<f6>arna 145
-## 5 2001    NA       NA       NA Stora sj<f6>arna 121
-## 6 2002    NA       NA       NA Stora sj<f6>arna 145
+##     År error rec_plus rec_minu           Område Biomassa
+## 1 1997    NA       NA       NA Stora sj<f6>arna      115
+## 2 1998    NA       NA       NA Stora sj<f6>arna      114
+## 3 1999    NA       NA       NA Stora sj<f6>arna      149
+## 4 2000    NA       NA       NA Stora sj<f6>arna      145
+## 5 2001    NA       NA       NA Stora sj<f6>arna      121
+## 6 2002    NA       NA       NA Stora sj<f6>arna      145
 \end{verbatim}
 
 Columns look better! But we also need to modify the actual levels of the
@@ -311,8 +340,9 @@ the data by typing:
 \end{verbatim}
 
 Clearly we also need to correct the names of the levels, similar to how
-we did for column names. This is because the beauty of ggplot is that
-all important information in the plot will be inherited from the data.
+we did for column names. This is because the beauty of \emph{ggplot} is
+that all important information in the plot will be inherited from the
+data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -327,18 +357,18 @@ all important information in the plot will be inherited from the data.
 \end{Shaded}
 
 \begin{verbatim}
-##     År error rec_plus rec_minu        Område Ton
-## 1 1997    NA       NA       NA Stora sjöarna 115
-## 2 1998    NA       NA       NA Stora sjöarna 114
-## 3 1999    NA       NA       NA Stora sjöarna 149
-## 4 2000    NA       NA       NA Stora sjöarna 145
-## 5 2001    NA       NA       NA Stora sjöarna 121
-## 6 2002    NA       NA       NA Stora sjöarna 145
+##     År error rec_plus rec_minu        Område Biomassa
+## 1 1997    NA       NA       NA Stora sjöarna      115
+## 2 1998    NA       NA       NA Stora sjöarna      114
+## 3 1999    NA       NA       NA Stora sjöarna      149
+## 4 2000    NA       NA       NA Stora sjöarna      145
+## 5 2001    NA       NA       NA Stora sjöarna      121
+## 6 2002    NA       NA       NA Stora sjöarna      145
 \end{verbatim}
 
 There is one last thing you might need to do with the data before
 proceeding with plotting, and that is to change the order of the levels
-in the data. When plotting, ggplot sets the levels of the data in
+in the data. When plotting, \emph{ggplot} sets the levels of the data in
 alphabetical order, but here we want a specific order: the first
 ``level'' should correspond to the total and the last to any special
 level, such as the recreational data.
@@ -357,18 +387,11 @@ level, such as the recreational data.
 
 Now the data look much better! You might not need to do these
 modification on your own data. \textbf{But you need} to make sure it is
-strutured in the same way, that is:
+structured in the same way, that is: \textbf{1 row = 1 observation (not
+multiple columns for different areas)}
 
-\begin{itemize}
-\tightlist
-\item
-  1 row = 1 observation (not multiple columns for different areas)
-\item
-  first level (see last code chunk) corresponds to total biomass and
-  last one is special series
-\end{itemize}
-
-\subsubsection{Define ggplot theme}\label{define-ggplot-theme}
+\subsubsection{\texorpdfstring{Define \emph{ggplot}
+theme}{Define ggplot theme}}\label{define-ggplot-theme}
 
 Now that you have loaded and cleaned up your or the example data, we can
 move on with general plotting settings. First the color palette:
@@ -426,27 +449,39 @@ figures!}\label{lets-start-making-figures}
 
 }
 
-\caption{Siklöja in Mälaren (RoM 2018) - example of a single-series plot}\label{fig:unnamed-chunk-11}
+\caption{Siklöja in Mälaren (RoM 2018) - example of a single-series plot}\label{fig:plot sikloja}
 \end{figure}
 
-For illustration purposes, we will now pretend our example pike dataset
+For illustration purposes, we will now pretend our example pike data set
 only is a single series, by filtering it to only contain the area
-``Stora Sjöarna''. If you have Fig.1 situation, your data might look
-something like this, with one column for year, one for area and one for
-tonnes.
+``Stora Sjöarna''. If you have a ``Fig.1 situation''``, your data might
+look something like this, with one column for year, one for area and one
+for tonnes.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{ dat1 <-}\StringTok{ }\NormalTok{dat }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{select}\NormalTok{(År, Ton, Område) }\OperatorTok{%>%}\StringTok{ }
+\NormalTok{dat1 <-}\StringTok{ }\NormalTok{dat }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(År, Biomassa, Område) }\OperatorTok{%>%}\StringTok{ }
 \StringTok{  }\KeywordTok{filter}\NormalTok{(Område }\OperatorTok{==}\StringTok{ "Stora sjöarna"}\NormalTok{)}
+
+\KeywordTok{head}\NormalTok{(dat1)}
 \end{Highlighting}
 \end{Shaded}
 
-We now need to specify y-axis titles and plot title. \textbf{This is
-what is meant by predifing variables! Instead of changing the plotting
-code we define what we want it to plot on the axis, for instance}. For
-the pike data we can set them as:
+\begin{verbatim}
+##     År Biomassa        Område
+## 1 1997      115 Stora sjöarna
+## 2 1998      114 Stora sjöarna
+## 3 1999      149 Stora sjöarna
+## 4 2000      145 Stora sjöarna
+## 5 2001      121 Stora sjöarna
+## 6 2002      145 Stora sjöarna
+\end{verbatim}
+
+We now need to specify the \textbf{y-axis title} and \textbf{plot
+title}. This is what is meant by predefining variables! Instead of
+changing the plotting code we define what we want it to plot on the
+axis, for instance**. For the pike data we can set them as:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -455,32 +490,30 @@ the pike data we can set them as:
 \end{Highlighting}
 \end{Shaded}
 
-Now go ahead and create the plot
+Now go ahead and create the plot:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{p1 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(dat1, }\KeywordTok{aes}\NormalTok{(År, Ton)) }\OperatorTok{+}
+\NormalTok{p1 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(dat1, }\KeywordTok{aes}\NormalTok{(År, Biomassa)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ dat1, }
-           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ År, }\DataTypeTok{y =}\NormalTok{ Ton), }\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }\DataTypeTok{fill =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }
+           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ År, }\DataTypeTok{y =}\NormalTok{ Biomassa), }\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }\DataTypeTok{fill =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }
            \DataTypeTok{width =} \FloatTok{0.6}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\CommentTok{#scale_color_manual(values = pal) +}
-\StringTok{  }\KeywordTok{scale_alpha_manual}\NormalTok{(}\DataTypeTok{values =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{""}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ y_axis) }\OperatorTok{+}\StringTok{ }\CommentTok{# here's where the axis title is called}
 \StringTok{  }\KeywordTok{ggtitle}\NormalTok{(title) }\OperatorTok{+}\StringTok{           }\CommentTok{# here's where the title is called}
 \StringTok{  }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{color  =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{expand =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{), }\DataTypeTok{breaks =}\NormalTok{ scales}\OperatorTok{::}\KeywordTok{pretty_breaks}\NormalTok{(}\DataTypeTok{n =} \DecValTok{6}\NormalTok{)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{expand =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{), }\DataTypeTok{breaks =}\NormalTok{ scales}\OperatorTok{::}\KeywordTok{pretty_breaks}\NormalTok{(}\DataTypeTok{n =} \DecValTok{5}\NormalTok{)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{theme_rom}\NormalTok{()}
+\StringTok{  }\KeywordTok{theme_rom}\NormalTok{()                }\CommentTok{# here we call our predefined theme}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{figure}
 
-{\centering \includegraphics{Making_figures_for_RoM_in_R_files/figure-latex/unnamed-chunk-15-1} 
+{\centering \includegraphics{Making_figures_for_RoM_in_R_files/figure-latex/plot 1-1} 
 
 }
 
-\caption{Gädda in the "Great Lakes" (RoM 2018) - example of a single-series plot using R}\label{fig:unnamed-chunk-15}
+\caption{Gädda in the "Great Lakes" (RoM 2018) - example of a single-series plot using R}\label{fig:plot 1}
 \end{figure}
 
 Save the file (to your working directory)
@@ -499,11 +532,11 @@ Save the file (to your working directory)
 
 }
 
-\caption{Gädda in the "Great Lakes" (RoM 2018) - example of a multiple-series plot}\label{fig:unnamed-chunk-17}
+\caption{Gädda in the "Great Lakes" (RoM 2018) - example of a multiple-series plot}\label{fig:plot gadda}
 \end{figure}
 
 We now need to specify y-axis titles and plot title, and in addition we
-need to define how mnay levels we have! For the pike data we can set
+need to define how many levels we have! For the pike data we can set
 them as:
 
 \begin{Shaded}
@@ -529,13 +562,13 @@ is not equal to recreational fisheries}
 \end{Shaded}
 
 \begin{verbatim}
-##     År error rec_plus rec_minu        Område Ton
-## 1 1997    NA       NA       NA Stora sjöarna 115
-## 2 1998    NA       NA       NA Stora sjöarna 114
-## 3 1999    NA       NA       NA Stora sjöarna 149
-## 4 2000    NA       NA       NA Stora sjöarna 145
-## 5 2001    NA       NA       NA Stora sjöarna 121
-## 6 2002    NA       NA       NA Stora sjöarna 145
+##     År error rec_plus rec_minu        Område Biomassa
+## 1 1997    NA       NA       NA Stora sjöarna      115
+## 2 1998    NA       NA       NA Stora sjöarna      114
+## 3 1999    NA       NA       NA Stora sjöarna      149
+## 4 2000    NA       NA       NA Stora sjöarna      145
+## 5 2001    NA       NA       NA Stora sjöarna      121
+## 6 2002    NA       NA       NA Stora sjöarna      145
 \end{verbatim}
 
 \begin{Shaded}
@@ -545,31 +578,33 @@ is not equal to recreational fisheries}
 \end{Shaded}
 
 \begin{verbatim}
-##       År error rec_plus rec_minu       Område Ton
-## 121 2012    NA       NA       NA Fritidsfiske  NA
-## 122 2013    NA       NA       NA Fritidsfiske  NA
-## 123 2014    73      223       77 Fritidsfiske 150
-## 124 2015    51      184       82 Fritidsfiske 133
-## 125 2016    NA       NA       NA Fritidsfiske  NA
-## 126 2017    NA       NA       NA Fritidsfiske  NA
+##       År error rec_plus rec_minu       Område Biomassa
+## 121 2012    NA       NA       NA Fritidsfiske       NA
+## 122 2013    NA       NA       NA Fritidsfiske       NA
+## 123 2014    73      223       77 Fritidsfiske      150
+## 124 2015    51      184       82 Fritidsfiske      133
+## 125 2016    NA       NA       NA Fritidsfiske       NA
+## 126 2017    NA       NA       NA Fritidsfiske       NA
 \end{verbatim}
+
+And with that set, we can make the second figure, with multiple levels:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{p2 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(dat, }\KeywordTok{aes}\NormalTok{(År, Ton, }\DataTypeTok{color =}\NormalTok{ Område)) }\OperatorTok{+}
+\NormalTok{p2 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(dat, }\KeywordTok{aes}\NormalTok{(År, Biomassa, }\DataTypeTok{color =}\NormalTok{ Område)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{subset}\NormalTok{(dat, Område }\OperatorTok{==}\StringTok{ }\NormalTok{main_series), }
-           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ År, }\DataTypeTok{y =}\NormalTok{ Ton), }\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }\DataTypeTok{fill =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }
+           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ År, }\DataTypeTok{y =}\NormalTok{ Biomassa), }\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }\DataTypeTok{fill =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }
            \DataTypeTok{width =} \FloatTok{0.6}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ dat, }\KeywordTok{aes}\NormalTok{(År, Ton, }\DataTypeTok{color =}\NormalTok{ Område, }\DataTypeTok{alpha =}\NormalTok{ Område), }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ dat, }\KeywordTok{aes}\NormalTok{(År, Biomassa, }\DataTypeTok{color =}\NormalTok{ Område, }\DataTypeTok{alpha =}\NormalTok{ Område), }
             \DataTypeTok{size =} \DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{subset}\NormalTok{(dat, Område }\OperatorTok{==}\StringTok{ }\NormalTok{special_series), }\CommentTok{# here we define our special series}
-             \KeywordTok{aes}\NormalTok{(År, Ton, }\DataTypeTok{fill =}\NormalTok{ Område), }\DataTypeTok{size =} \DecValTok{2}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\KeywordTok{max}\NormalTok{(n_lev)]) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{subset}\NormalTok{(dat, Område }\OperatorTok{==}\StringTok{ }\NormalTok{special_series), }\CommentTok{# here we set our special series}
+             \KeywordTok{aes}\NormalTok{(År, Biomassa, }\DataTypeTok{fill =}\NormalTok{ Område), }\DataTypeTok{size =} \DecValTok{2}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\KeywordTok{max}\NormalTok{(n_lev)]) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\CommentTok{# above the number of level enters (max(n_lev))}
 \StringTok{  }\KeywordTok{geom_errorbar}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{subset}\NormalTok{(dat, Område }\OperatorTok{==}\StringTok{ }\NormalTok{special_series), }
                 \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ År, }\DataTypeTok{ymin =}\NormalTok{ rec_minu, }\DataTypeTok{ymax =}\NormalTok{ rec_plus), }
                 \DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{width  =} \DecValTok{1}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\KeywordTok{max}\NormalTok{(n_lev)]) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ pal[}\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, n_lev)]) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_alpha_manual}\NormalTok{(}\DataTypeTok{values =} \KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, (n_lev}\OperatorTok{-}\DecValTok{1}\NormalTok{)), }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ pal[}\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, n_lev)]) }\OperatorTok{+}
 \StringTok{  }\CommentTok{# above we set the line between rec fisheries transparent}
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{""}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ y_axis) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ggtitle}\NormalTok{(title) }\OperatorTok{+}
@@ -590,11 +625,11 @@ is not equal to recreational fisheries}
 
 \begin{figure}
 
-{\centering \includegraphics{Making_figures_for_RoM_in_R_files/figure-latex/unnamed-chunk-21-1} 
+{\centering \includegraphics{Making_figures_for_RoM_in_R_files/figure-latex/plot 2-1} 
 
 }
 
-\caption{Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R}\label{fig:unnamed-chunk-21}
+\caption{Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R}\label{fig:plot 2}
 \end{figure}
 
 Now save the file (to your working directory)
@@ -606,13 +641,14 @@ Now save the file (to your working directory)
 \end{Shaded}
 
 Let's say that you have 3 different areas and no special series and no
-error bars. Then you simply need to hashtag the code the plots those
-features. We subset the full data as an example:
+error bars. Then you simply need to hash tag the code the plots those
+features. We subset the full data to select only the total and lake
+Mälaren as an example:
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{dat2 <-}\StringTok{ }\NormalTok{dat }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{select}\NormalTok{(År, Ton, Område) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(År, Biomassa, Område) }\OperatorTok{%>%}\StringTok{ }
 \StringTok{  }\KeywordTok{filter}\NormalTok{(Område }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Stora sjöarna"}\NormalTok{, }\StringTok{"Mälaren"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
@@ -625,23 +661,23 @@ We now need to update the number of levels in the data:
 \end{Highlighting}
 \end{Shaded}
 
-Repeat the general Fig. 2 plot, but remove the points and errorbars:
+Repeat the general Fig. 2 plot, but remove the points and error bars:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{p2a <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(dat2, }\KeywordTok{aes}\NormalTok{(År, Ton, }\DataTypeTok{color =}\NormalTok{ Område)) }\OperatorTok{+}
+\NormalTok{p2a <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(dat2, }\KeywordTok{aes}\NormalTok{(År, Biomassa, }\DataTypeTok{color =}\NormalTok{ Område)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{subset}\NormalTok{(dat2, Område }\OperatorTok{==}\StringTok{ }\NormalTok{main_series), }
-           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ År, }\DataTypeTok{y =}\NormalTok{ Ton), }\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }\DataTypeTok{fill =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }
+           \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ År, }\DataTypeTok{y =}\NormalTok{ Biomassa), }\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }\DataTypeTok{fill =}\NormalTok{ pal[}\DecValTok{1}\NormalTok{], }
            \DataTypeTok{width =} \FloatTok{0.6}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ dat2, }\KeywordTok{aes}\NormalTok{(År, Ton, }\DataTypeTok{color =}\NormalTok{ Område, }\DataTypeTok{alpha =}\NormalTok{ Område), }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ dat2, }\KeywordTok{aes}\NormalTok{(År, Biomassa, }\DataTypeTok{color =}\NormalTok{ Område, }\DataTypeTok{alpha =}\NormalTok{ Område), }
             \DataTypeTok{size =} \DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\CommentTok{#geom_point(data = subset(dat, Område == special_series), # here we define our special series}
-\StringTok{  }\CommentTok{#           aes(År, Ton, fill = Område), size = 2, color = pal[max(n_lev)]) + }
+\StringTok{  }\CommentTok{#           aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + }
 \StringTok{  }\CommentTok{#geom_errorbar(data = subset(dat, Område == special_series), }
 \StringTok{  }\CommentTok{#              aes(x = År, ymin = rec_minu, ymax = rec_plus), }
 \StringTok{  }\CommentTok{#              show.legend = FALSE, width  = 1, color = pal[max(n_lev)]) +}
-\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ pal[}\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, n_lev)]) }\OperatorTok{+}
 \StringTok{  }\CommentTok{#scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + }
+\StringTok{  }\KeywordTok{scale_color_manual}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ pal[}\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, n_lev)]) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{""}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ y_axis) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ggtitle}\NormalTok{(title) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{fill  =} \OtherTok{FALSE}\NormalTok{,}
@@ -661,25 +697,20 @@ Repeat the general Fig. 2 plot, but remove the points and errorbars:
 
 \begin{figure}
 
-{\centering \includegraphics{Making_figures_for_RoM_in_R_files/figure-latex/unnamed-chunk-26-1} 
+{\centering \includegraphics{Making_figures_for_RoM_in_R_files/figure-latex/plot 2a-1} 
 
 }
 
-\caption{Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R}\label{fig:unnamed-chunk-26}
+\caption{Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R}\label{fig:plot 2a}
 \end{figure}
 
 \subsubsection{To work on:}\label{to-work-on}
 
 \begin{itemize}
+\tightlist
 \item
   secondary y-axis that is not a one-to-one transformation of the
   primary axes. Possible?
-\item
-  set Ton in column name as biomass and define ton as a vector!
-\item
-  name chunks
-\item
-  write comments in pdf: what about aspect ratio?
 \end{itemize}
 
 
