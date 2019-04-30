@@ -5,7 +5,8 @@ date: "28 april 2019"
 output: 
   pdf_document:
     fig_caption: yes
-    keep_tex: yes
+    number_sections: true
+  urlcolor: blue
 header-includes: 
  \usepackage{booktabs}
  \usepackage{longtable}
@@ -17,28 +18,29 @@ header-includes:
  \floatplacement{figure}{H}
 ---
 
+\tableofcontents
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction
+# Introduction
 *First, this is a first draft and a work in progress so any feedback on this document or the figures are highly appreciated!*
 
-### Why R?
+## Why R?
 The main argument for using code to create RoM figures is to standardize them across species and to do so while limiting repetitive work (you only need to write a script once!). These figures here are made with the package *ggplot2*, which is a very powerful tool for making multilevel figures and allows for easy modification via the theme-function. 
 
-### Basic prerequisitis
+## Basic prerequisitis
 It is an advantage if you know some basic R. I strongly recommend using R-studio and working in a so called R-studio project (but it is not needed to reproduce this code). To create a project, open R-studio, click File/New Project/New Directory and specify where you want to save it. Open the *"your_project_name".Rproj* and click File/New Script and save that in your project folder. And that's it! The best thing is that now all your search paths are relative and not absolute. If you want to read in data, put the data inside the project folder and you don't have to specify the full search path (*"C:/R/RoM/data-file.csv"* or whatever), it's enough you give the name of the file only (more on that below!). Another benefit with a relative search path is that I don't have to worry about setting the working directory and changing the directory each time I try to rerun anyone elses script. 
 
 Lastly, this is an R Markdown document. This means R-code is text with grey background. You can copy these chunks of code to a new R-script in your R-studio project and run it from there.
 
-### What does this script do?
+## What does this script do?
 This script gives an example of how you can use R to create standardized figures in R, and save them in a given resolution as a *.tiff*, ready to be used without further editing.
 
-I have chosen data for freshwater pike (*Esox lucious*) to illustrate how you can use this code, because it has all potential data for a RoM species (recreational, multiple areas, error bars etc.). These data have been uploaded on github: [github](https://github.com/maxlindmark/ROM)
+I have chosen data for freshwater pike (*Esox lucious*) to illustrate how you can use this code, because it has all potential data for a RoM species (recreational, multiple areas, error bars etc.). These data have been uploaded on [github](https://github.com/maxlindmark/ROM).
 
-
-### How do I use this for my species?
+## How do I use this for my species?
 Most basic RoM figures that all species have in some form can be grouped into three different categories. Each category will have its own script. Once you identify the best category for your species you **should not have to modify the actual plotting code**, instead the aim to is to
 
 + 1. pre-define your variables
@@ -54,8 +56,8 @@ Check out the flowchart below to help identify which plot you need.
 
 Once you identify which plot type you will use, you can read about how to prepare your data to use the script. A standardized way of saving data is key for making any kind of standardized script! The data structure is described in section **Preparation**.
 
-## Preparation
-### Load libraries
+# Preparation
+## Load libraries
 Before starting, we need to install a few packages:
 ```{r read packages, message=FALSE, warning=FALSE}
 rm(list = ls()) # clear the workspace from objects
@@ -78,7 +80,7 @@ pkgs <- c("devtools",
 invisible(lapply(pkgs, function(x) require(x, character.only = T, quietly = T)))
 ```
 
-### Load example data and clean it up!
+## Load example data and clean it up!
 Now let's read in the example data (freshwater pike):
 ```{r read data}
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
@@ -133,7 +135,7 @@ dat$Område <- factor(dat$Område,
 
 Now the data look much better! You might not need to do these modification on your own data. **But you need** to make sure it is structured in the same way, that is: **1 row = 1 observation (not multiple columns for different areas)**
 
-### Define *ggplot* theme 
+## Define *ggplot* theme 
 Now that you have loaded and cleaned up your or the example data, we can move on with general plotting settings. First the color palette:
 ```{r set palette}
 pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
@@ -169,7 +171,7 @@ theme_rom <- function(base_size = 12, base_family = "") {
 }
 ```
 
-## Let's start making figures!
+# Let's start making figures!
 ## Fig. 1. Single series
 ```{r plot sikloja, fig.width=3.14961, fig.height=3.14961, echo=FALSE, fig.align='center', fig.cap='Siklöja in Mälaren (RoM 2018) - example of a single-series plot'}
 sikloja_path <- "sikloja.png"
@@ -213,7 +215,6 @@ Save the file (to your working directory)
 ```{r save p1, message=FALSE, warning=FALSE, results="hide"}
 ggsave("Fig_1.tiff", plot = p1, dpi = 300, width = 8, height = 8, units = "cm")
 ```
-
 
 ## Fig. 2. Multiple series
 ```{r plot gadda, fig.width=3.14961, fig.height=3.14961, echo=FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a multiple-series plot'}
@@ -325,7 +326,7 @@ p2a <- ggplot(dat2, aes(År, Biomassa, color = Område)) +
 p2a
 ```
 
-### To work on:
+# To work on:
 
 + secondary y-axis that is not a one-to-one transformation of the primary axes. Possible?
 
