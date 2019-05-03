@@ -1,4 +1,4 @@
-År;rec_plus;rec_minu;Område;Biomassa
+År;error_plus;error_minu;Område;Biomassa
 1997;NA;NA;Stora sjöarna;115
 1998;NA;NA;Stora sjöarna;114
 1999;NA;NA;Stora sjöarna;149
@@ -81,7 +81,7 @@
 2013;NA;NA;Mälaren;27
 2014;NA;NA;Mälaren;33
 2015;NA;NA;Mälaren;25
-2016;25;17;Mälaren;21
+2016;NA;NA;Mälaren;21
 2017;NA;NA;Mälaren;17
 1997;NA;NA;Hjälmaren;26
 1998;NA;NA;Hjälmaren;24

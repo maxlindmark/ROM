@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6745 64-bit) (preloaded format=pdflatex 2018.8.24)  3 MAY 2019 18:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6745 64-bit) (preloaded format=pdflatex 2018.8.24)  3 MAY 2019 18:47
 entering extended mode
 **./Making_figures_for_RoM_in_R.tex
 (Making_figures_for_RoM_in_R.tex
@@ -829,117 +829,99 @@ Package xcolor Warning: Incompatible color definition on input line 316.
 Package xcolor Warning: Incompatible color definition on input line 316.
 
 
-Package xcolor Warning: Incompatible color definition on input line 332.
+Package xcolor Warning: Incompatible color definition on input line 322.
 
 
-Package xcolor Warning: Incompatible color definition on input line 336.
+Package xcolor Warning: Incompatible color definition on input line 326.
 
 
-Package xcolor Warning: Incompatible color definition on input line 336.
+Package xcolor Warning: Incompatible color definition on input line 326.
 
 
-Package xcolor Warning: Incompatible color definition on input line 348.
+Package xcolor Warning: Incompatible color definition on input line 338.
 
 
-Package xcolor Warning: Incompatible color definition on input line 358.
+Package xcolor Warning: Incompatible color definition on input line 349.
 
 
-Package xcolor Warning: Incompatible color definition on input line 358.
-
-
-Package xcolor Warning: Incompatible color definition on input line 358.
+Package xcolor Warning: Incompatible color definition on input line 349.
 
 [4]
 
 Package xcolor Warning: Incompatible color definition on input line 358.
 
 
-Package xcolor Warning: Incompatible color definition on input line 358.
+Package xcolor Warning: Incompatible color definition on input line 368.
 
 
-Package xcolor Warning: Incompatible color definition on input line 370.
+Package xcolor Warning: Incompatible color definition on input line 368.
 
 
-Package xcolor Warning: Incompatible color definition on input line 374.
+Package xcolor Warning: Incompatible color definition on input line 381.
 
 
-Package xcolor Warning: Incompatible color definition on input line 374.
+Package xcolor Warning: Incompatible color definition on input line 385.
 
 
-Package xcolor Warning: Incompatible color definition on input line 393.
+Package xcolor Warning: Incompatible color definition on input line 385.
 
 
-Package xcolor Warning: Incompatible color definition on input line 403.
+Package xcolor Warning: Incompatible color definition on input line 392.
 
 
-Package xcolor Warning: Incompatible color definition on input line 403.
+Package xcolor Warning: Incompatible color definition on input line 421.
 
 
-Package xcolor Warning: Incompatible color definition on input line 416.
+Package xcolor Warning: Incompatible color definition on input line 421.
 
-
-Package xcolor Warning: Incompatible color definition on input line 420.
-
-
-Package xcolor Warning: Incompatible color definition on input line 420.
-
-
-Package xcolor Warning: Incompatible color definition on input line 427.
-
-
-Package xcolor Warning: Incompatible color definition on input line 456.
-
-
-Package xcolor Warning: Incompatible color definition on input line 456.
-
-
-Package xcolor Warning: Incompatible color definition on input line 456.
-
-[5]
-
-Package xcolor Warning: Incompatible color definition on input line 456.
-
-
-Package xcolor Warning: Incompatible color definition on input line 456.
-
-<sikloja.jpg, id=108, 227.6505pt x 227.6505pt>
+<sikloja.jpg, id=104, 227.6505pt x 227.6505pt>
 File: sikloja.jpg Graphic file (type jpg)
 <use sikloja.jpg>
-Package pdftex.def Info: sikloja.jpg  used on input line 464.
+Package pdftex.def Info: sikloja.jpg  used on input line 429.
 (pdftex.def)             Requested size: 227.65688pt x 227.65688pt.
+[5]
 
-Package xcolor Warning: Incompatible color definition on input line 477.
+Package xcolor Warning: Incompatible color definition on input line 442.
+
+
+Package xcolor Warning: Incompatible color definition on input line 450.
+
+
+Package xcolor Warning: Incompatible color definition on input line 450.
+
+
+Package xcolor Warning: Incompatible color definition on input line 467.
+
+
+Package xcolor Warning: Incompatible color definition on input line 471.
+
+
+Package xcolor Warning: Incompatible color definition on input line 471.
+
+
+Package xcolor Warning: Incompatible color definition on input line 475.
+
+
+Package xcolor Warning: Incompatible color definition on input line 487.
+
+
+Package xcolor Warning: Incompatible color definition on input line 487.
+
+
+Package xcolor Warning: Incompatible color definition on input line 487.
 
 [6pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.477 \begin{Shaded}
-                     <./sikloja.jpg>]
+l.487 \end{Shaded}
+                   <./sikloja.jpg>]
 
-Package xcolor Warning: Incompatible color definition on input line 485.
-
-
-Package xcolor Warning: Incompatible color definition on input line 485.
+Package xcolor Warning: Incompatible color definition on input line 487.
 
 
-Package xcolor Warning: Incompatible color definition on input line 502.
-
-
-Package xcolor Warning: Incompatible color definition on input line 506.
-
-
-Package xcolor Warning: Incompatible color definition on input line 506.
-
-
-Package xcolor Warning: Incompatible color definition on input line 510.
-
-
-Package xcolor Warning: Incompatible color definition on input line 522.
-
-
-Package xcolor Warning: Incompatible color definition on input line 522.
+Package xcolor Warning: Incompatible color definition on input line 487.
 
 <Making_figures_for_RoM_in_R_files/figure-latex/plot 1-1.pdf, id=114, 226.8475p
 t x 226.8475pt>
@@ -947,72 +929,71 @@ File: Making_figures_for_RoM_in_R_files/figure-latex/plot 1-1.pdf Graphic file
 (type pdf)
 <use Making_figures_for_RoM_in_R_files/figure-latex/plot 1-1.pdf>
 Package pdftex.def Info: Making_figures_for_RoM_in_R_files/figure-latex/plot 1-
-1.pdf  used on input line 526.
+1.pdf  used on input line 491.
 (pdftex.def)             Requested size: 226.84694pt x 226.84694pt.
 
-Package xcolor Warning: Incompatible color definition on input line 535.
+Package xcolor Warning: Incompatible color definition on input line 500.
 
+
+Package xcolor Warning: Incompatible color definition on input line 504.
+
+
+Package xcolor Warning: Incompatible color definition on input line 504.
+
+<gadda.jpg, id=115, 227.6505pt x 227.6505pt>
+File: gadda.jpg Graphic file (type jpg)
+<use gadda.jpg>
+Package pdftex.def Info: gadda.jpg  used on input line 510.
+(pdftex.def)             Requested size: 227.65688pt x 227.65688pt.
 [7pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.535 \begin{Shaded}
-                     <./Making_figures_for_RoM_in_R_files/figure-latex/plot 1-1
-.pdf>]
+l.516 
+       <./Making_figures_for_RoM_in_R_files/figure-latex/plot 1-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 539.
+Package xcolor Warning: Incompatible color definition on input line 521.
 
 
-Package xcolor Warning: Incompatible color definition on input line 539.
+Package xcolor Warning: Incompatible color definition on input line 528.
 
-<gadda.jpg, id=126, 227.6505pt x 227.6505pt>
-File: gadda.jpg Graphic file (type jpg)
-<use gadda.jpg>
-Package pdftex.def Info: gadda.jpg  used on input line 545.
-(pdftex.def)             Requested size: 227.65688pt x 227.65688pt.
+
+Package xcolor Warning: Incompatible color definition on input line 528.
+
+
+Package xcolor Warning: Incompatible color definition on input line 536.
+
+
+Package xcolor Warning: Incompatible color definition on input line 540.
+
+
+Package xcolor Warning: Incompatible color definition on input line 540.
+
+
+Package xcolor Warning: Incompatible color definition on input line 552.
+
 
 Package xcolor Warning: Incompatible color definition on input line 556.
 
 
-Package xcolor Warning: Incompatible color definition on input line 563.
-
-
-Package xcolor Warning: Incompatible color definition on input line 563.
-
-
-Package xcolor Warning: Incompatible color definition on input line 571.
-
-
-Package xcolor Warning: Incompatible color definition on input line 575.
-
-
-Package xcolor Warning: Incompatible color definition on input line 575.
-
-
-Package xcolor Warning: Incompatible color definition on input line 587.
-
-
-Package xcolor Warning: Incompatible color definition on input line 591.
-
-
-Package xcolor Warning: Incompatible color definition on input line 591.
+Package xcolor Warning: Incompatible color definition on input line 556.
 
 [8pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.601 \end{verbatim}
+l.566 \end{verbatim}
                      <./gadda.jpg>]
 
-Package xcolor Warning: Incompatible color definition on input line 605.
+Package xcolor Warning: Incompatible color definition on input line 570.
 
 
-Package xcolor Warning: Incompatible color definition on input line 635.
+Package xcolor Warning: Incompatible color definition on input line 601.
 
 
-Package xcolor Warning: Incompatible color definition on input line 635.
+Package xcolor Warning: Incompatible color definition on input line 601.
 
 <Making_figures_for_RoM_in_R_files/figure-latex/plot 2-1.pdf, id=132, 226.8475p
 t x 325.215pt>
@@ -1020,61 +1001,61 @@ File: Making_figures_for_RoM_in_R_files/figure-latex/plot 2-1.pdf Graphic file
 (type pdf)
 <use Making_figures_for_RoM_in_R_files/figure-latex/plot 2-1.pdf>
 Package pdftex.def Info: Making_figures_for_RoM_in_R_files/figure-latex/plot 2-
-1.pdf  used on input line 639.
+1.pdf  used on input line 605.
 (pdftex.def)             Requested size: 226.84694pt x 325.2142pt.
 [9]
 
-Package xcolor Warning: Incompatible color definition on input line 648.
+Package xcolor Warning: Incompatible color definition on input line 614.
 
 
-Package xcolor Warning: Incompatible color definition on input line 652.
+Package xcolor Warning: Incompatible color definition on input line 618.
 
 
-Package xcolor Warning: Incompatible color definition on input line 652.
+Package xcolor Warning: Incompatible color definition on input line 618.
 
 
-Package xcolor Warning: Incompatible color definition on input line 659.
+Package xcolor Warning: Incompatible color definition on input line 625.
 
 
-Package xcolor Warning: Incompatible color definition on input line 665.
+Package xcolor Warning: Incompatible color definition on input line 631.
 
 
-Package xcolor Warning: Incompatible color definition on input line 665.
+Package xcolor Warning: Incompatible color definition on input line 631.
 
 
-Package xcolor Warning: Incompatible color definition on input line 669.
+Package xcolor Warning: Incompatible color definition on input line 635.
 
 
-Package xcolor Warning: Incompatible color definition on input line 673.
+Package xcolor Warning: Incompatible color definition on input line 639.
 
 
-Package xcolor Warning: Incompatible color definition on input line 673.
+Package xcolor Warning: Incompatible color definition on input line 639.
 
 
-Package xcolor Warning: Incompatible color definition on input line 677.
+Package xcolor Warning: Incompatible color definition on input line 643.
 
 
-Package xcolor Warning: Incompatible color definition on input line 705.
+Package xcolor Warning: Incompatible color definition on input line 672.
 
 
-Package xcolor Warning: Incompatible color definition on input line 705.
+Package xcolor Warning: Incompatible color definition on input line 672.
 
 
-Package xcolor Warning: Incompatible color definition on input line 705.
+Package xcolor Warning: Incompatible color definition on input line 672.
 
 [10pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.705 \end{Shaded}
+l.672 \end{Shaded}
                    <./Making_figures_for_RoM_in_R_files/figure-latex/plot 2-1.p
 df>]
 
-Package xcolor Warning: Incompatible color definition on input line 705.
+Package xcolor Warning: Incompatible color definition on input line 672.
 
 
-Package xcolor Warning: Incompatible color definition on input line 705.
+Package xcolor Warning: Incompatible color definition on input line 672.
 
 <Making_figures_for_RoM_in_R_files/figure-latex/plot 2a-1.pdf, id=147, 226.8475
 pt x 325.215pt>
@@ -1082,32 +1063,32 @@ File: Making_figures_for_RoM_in_R_files/figure-latex/plot 2a-1.pdf Graphic file
  (type pdf)
 <use Making_figures_for_RoM_in_R_files/figure-latex/plot 2a-1.pdf>
 Package pdftex.def Info: Making_figures_for_RoM_in_R_files/figure-latex/plot 2a
--1.pdf  used on input line 709.
+-1.pdf  used on input line 676.
 (pdftex.def)             Requested size: 226.84694pt x 325.2142pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 726.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 693.
 [11pdfTeX warning (ext4): destination with the same identifier (name{figure.6})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.726 \end{document}
+l.693 \end{document}
                      <./Making_figures_for_RoM_in_R_files/figure-latex/plot 2a-
 1.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 726.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 693.
 (Making_figures_for_RoM_in_R.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 726.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 726.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 693.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 693.
 Package rerunfilecheck Info: File `Making_figures_for_RoM_in_R.out' has not cha
 nged.
 (rerunfilecheck)             Checksum: C796065F6F40D54FB2EF1DCF8FE0D515;2076.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 726.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 693.
  ) 
 Here is how much of TeX's memory you used:
- 13472 strings out of 492969
- 196207 string characters out of 3135792
- 315806 words of memory out of 3000000
+ 13474 strings out of 492969
+ 196227 string characters out of 3135792
+ 312806 words of memory out of 3000000
  17040 multiletter control sequences out of 15000+200000
- 59310 words of font info for 78 fonts, out of 3000000 for 9000
+ 59393 words of font info for 79 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,6n,38p,381b,455s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ts1.enc}{C:/Program Files/
@@ -1120,7 +1101,7 @@ c/lm/lmri10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmri12.pfb><
 C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files/
 MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/
 type1/public/lm/lmtti10.pfb>
-Output written on Making_figures_for_RoM_in_R.pdf (11 pages, 565196 bytes).
+Output written on Making_figures_for_RoM_in_R.pdf (11 pages, 565725 bytes).
 PDF statistics:
  206 PDF objects out of 1000 (max. 8388607)
  34 named destinations out of 1000 (max. 500000)

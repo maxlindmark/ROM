@@ -85,13 +85,13 @@ Now let's read in the example data (freshwater pike):
 ```{r read data}
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
 dat <- read.csv(
-  text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"), 
+  text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv), 
   sep = ";")
 ```
 
 For your own species, the code would typically look like this if you put the data inside your R Project folder:
-```{r read your own data, eval=FALSE}
-dat <- read.csv("pike.csv", sep = ";")
+```{r read your own data}
+#dat <- read.csv("pike.csv", sep = ";")
 ```
 
 Inspect the data:
@@ -101,9 +101,9 @@ head(dat)
 
 Users will have different encoding which affects how certain characters are read. Instead of forcing everyone to use the same encoding, I'm showing you how to rename columns. It is **VERY** important that you use these column names because they will determine which level gets which colour and line (if you insist on other column names you have to modify the plot code)!
 ```{r rename columns}
-dat <- dat %>% rename(Område = Omr.e5.de,
-                      År     = X.c5.r)
-head(dat)
+#dat <- dat %>% rename(Område = Omr.e5.de,
+#                      År     = X.c5.r)
+#head(dat)
 ```
 
 Columns look better! But we also need to modify the actual levels of the column (i.e. the levels of the lakes). You can see which lakes are in the data by typing: 
@@ -113,14 +113,14 @@ levels(dat$Område)
 
 Clearly we also need to correct the names of the levels, similar to how we did for column names. This is because the beauty of *ggplot* is that all important information in the plot will be inherited from the data.
 ```{r rename levels}
-levels(dat$Område) <- c("Fritidsfiske", 
-                        "Hjälmaren", 
-                        "Mälaren", 
-                        "Stora sjöarna", 
-                        "Vänern", 
-                        "Vättern")
-head(dat)
-tail(dat)
+#levels(dat$Område) <- c("Fritidsfiske", 
+#                        "Hjälmaren", 
+#                        "Mälaren", 
+#                        "Stora sjöarna", 
+#                        "Vänern", 
+#                        "Vättern")
+#head(dat)
+#tail(dat)
 ```
 
 There is one last thing you might need to do with the data before proceeding with plotting, and that is to change the order of the levels in the data. When plotting, *ggplot* sets the levels of the data in alphabetical order, but here we want a specific order: the first "level" should correspond to the total and the last to any special level, such as the recreational data.
@@ -229,7 +229,7 @@ n_lev <- length(unique(dat$Område))
 special_series <- c("Fritidsfiske")
 ```
 
-Note that we in this example use multiple data series, and that one of them is is recreational fisheries that in turn has error bars. **These need to be in columns, so that we have a high (rec_plus) and a low (rec_minu) column. Note also that they are NA when the Område is not equal to recreational fisheries**
+Note that we in this example use multiple data series, and that one of them is is recreational fisheries that in turn has error bars. **These need to be in columns, so that we have a high (error_plus) and a low (error_minu) column. Note also that they are NA when the Område is not equal to recreational fisheries**
 ```{r inspect data}
 head(dat) 
 tail(dat)
@@ -246,8 +246,9 @@ p2 <- ggplot(dat, aes(År, Biomassa, color = Område)) +
   geom_point(data = subset(dat, Område == special_series), # here we set our special series
              aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + 
   # above the number of level enters (max(n_lev))
-  geom_errorbar(aes(x = År, ymin = rec_minu, ymax = rec_plus), 
-                show.legend = FALSE, width  = 1, color = pal[max(n_lev)]) +
+  geom_errorbar(data = dat, aes(x = År, ymin = error_minu, ymax = error_plus, 
+                                color = Område), 
+                show.legend = FALSE, width  = 1) +
   scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   # above we set the line between rec fisheries transparent
@@ -297,8 +298,9 @@ p2a <- ggplot(dat2, aes(År, Biomassa, color = Område)) +
             size = 1) + 
   #geom_point(data = subset(dat, Område == special_series), # here we define our special series
   #           aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + 
-  #geom_errorbar(aes(x = År, ymin = rec_minu, ymax = rec_plus), 
-  #              show.legend = FALSE, width  = 1, color = pal[max(n_lev)]) +
+  #geom_errorbar(data = dat, aes(x = År, ymin = error_minu, ymax = error_plus, 
+  #                              color = Område), 
+  #              show.legend = FALSE, width  = 1) +
   #scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   labs(x = "", y = y_axis) +
