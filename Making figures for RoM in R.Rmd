@@ -120,6 +120,7 @@ levels(dat$Område) <- c("Fritidsfiske",
                         "Vänern", 
                         "Vättern")
 head(dat)
+tail(dat)
 ```
 
 There is one last thing you might need to do with the data before proceeding with plotting, and that is to change the order of the levels in the data. When plotting, *ggplot* sets the levels of the data in alphabetical order, but here we want a specific order: the first "level" should correspond to the total and the last to any special level, such as the recreational data.
@@ -190,7 +191,6 @@ head(dat1)
 We now need to specify the **y-axis title** and **plot title**. This is what is meant by predefining variables! Instead of changing the plotting code we define what we want it to plot on the axis, for instance**. For the pike data we can set them as:
 ```{r set variables p1}
 y_axis <- c("Landningar (ton)")
-title  <- c("Landningar")
 ```
 
 Now go ahead and create the plot:
@@ -200,7 +200,6 @@ p1 <- ggplot(dat1, aes(År, Biomassa)) +
            aes(x = År, y = Biomassa), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
   labs(x = "", y = y_axis) + # here's where the axis title is called
-  ggtitle(title) +           # here's where the title is called
   guides(color  = FALSE) +
   scale_x_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 6)) +
   scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 5)) +
@@ -225,7 +224,6 @@ include_graphics(gadda_path)
 We now need to specify y-axis titles and plot title, and in addition we need to define how many levels we have! For the pike data we can set them as:
 ```{r set variables p2}
 y_axis <- c("Landningar (ton)")
-title <- c("Landningar") 
 main_series <- c("Stora sjöarna")
 n_lev <- length(unique(dat$Område)) 
 special_series <- c("Fritidsfiske")
@@ -248,14 +246,12 @@ p2 <- ggplot(dat, aes(År, Biomassa, color = Område)) +
   geom_point(data = subset(dat, Område == special_series), # here we set our special series
              aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + 
   # above the number of level enters (max(n_lev))
-  geom_errorbar(data = subset(dat, Område == special_series), 
-                aes(x = År, ymin = rec_minu, ymax = rec_plus), 
+  geom_errorbar(aes(x = År, ymin = rec_minu, ymax = rec_plus), 
                 show.legend = FALSE, width  = 1, color = pal[max(n_lev)]) +
   scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   # above we set the line between rec fisheries transparent
   labs(x = "", y = y_axis) +
-  ggtitle(title) +
   guides(fill  = FALSE,
          alpha = FALSE,
          color = guide_legend(nrow = 3, 
@@ -301,13 +297,11 @@ p2a <- ggplot(dat2, aes(År, Biomassa, color = Område)) +
             size = 1) + 
   #geom_point(data = subset(dat, Område == special_series), # here we define our special series
   #           aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + 
-  #geom_errorbar(data = subset(dat, Område == special_series), 
-  #              aes(x = År, ymin = rec_minu, ymax = rec_plus), 
+  #geom_errorbar(aes(x = År, ymin = rec_minu, ymax = rec_plus), 
   #              show.legend = FALSE, width  = 1, color = pal[max(n_lev)]) +
   #scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   labs(x = "", y = y_axis) +
-  ggtitle(title) +
   guides(fill  = FALSE,
          alpha = FALSE,
          color = guide_legend(nrow = 3, 

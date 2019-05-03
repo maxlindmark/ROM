@@ -53,6 +53,7 @@ dat <- dat %>% gather(Sjö, Ton, 2:7)
 ## write to csv and to show how the authors should prepare the data
 #dat <- dat %>% rename(Område = Sjö)
 #write.csv(dat, "pike.csv")
+# ***NOTE THIS IS NOT WHAT PRODUCED THE pike.csv. IN THAT FILE I MADE MANUAL CHANGES FOR ILLUSTRATION PURPOSES!!!! DO NOT OVERWRITE!!
 
 head(dat)
 
