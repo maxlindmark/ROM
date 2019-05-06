@@ -25,33 +25,35 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Introduction
-*First, this is a first draft and a work in progress so any feedback on this document or the figures are highly appreciated!* This document has been put together by Max Lindmark (K-lab), with code and input from Massimiliano Cardinale <massimiliano.cardinale@slu.se> (H-lab) and Martin Ogonowski <martin.ogonowski@slu.se> (Sö.lab). We are also the R-contact-persons for RoM work, so please send any questions to your corresponding lab-contact. And if it's a general R-question, feel free to email pur R-mailing list <Aqua r-users <aqua-r-users@slu.se>.
+*First, this is a first draft and a work in progress so any feedback on this document or the figures are highly appreciated!* This document has been put together by Max Lindmark (K-lab), with code and input from Massimiliano Cardinale <massimiliano.cardinale@slu.se> (H-lab) and Martin Ogonowski <martin.ogonowski@slu.se> (Sö-lab). We are also the R-contact-persons for RoM work, so please send any questions to your corresponding lab-contact. And if it's a general R-question, please do also email the R-mailing list Aqua r-users <aqua-r-users@slu.se>.
+
+**These code snippets are aimed to be as generic as possible. However, because almost all non-assessed species have different data, there is no guarantee that the code will work straight from pdf with your species. Do give it a try if you feel adventurous, but if you get stuck don't hesitate contacting us!**
 
 ## Why R?
-The main argument for using code to create RoM figures is to standardize them across species and to do so while limiting repetitive work (you only need to write a script once!). These figures here are made with the package *ggplot2*, which is a very powerful tool for making multilevel figures and allows for easy modification via the theme-function. 
+The main argument for using code to create RoM figures is to standardize them across species and to do so while limiting repetitive work (you only need to write a script once!). 
 
 ## Basic prerequisitis
 It is an advantage if you know some basic R. I strongly recommend using R-studio and working in a so called R-studio project (but it is not needed to reproduce this code). To create a project, open R-studio, click File/New Project/New Directory and specify where you want to save it. Open the *"your_project_name".Rproj* and click File/New Script and save that in your project folder. And that's it! The best thing is that now all your search paths are relative and not absolute. If you want to read in data, put the data inside the project folder and you don't have to specify the full search path (*"C:/R/RoM/data-file.csv"* or whatever), it's enough you give the name of the file only (more on that below!). Another benefit with a relative search path is that I don't have to worry about setting the working directory and changing the directory each time I try to rerun anyone elses script. 
 
 Lastly, this is an R Markdown document. This means R-code is text with grey background. You can copy these chunks of code to a new R-script in your R-studio project and run it from there.
 
-## What does this script do?
-This script gives an example of how you can use R to create standardized figures in R, and save them in a given resolution as a *.tiff*, ready to be used without further editing.
+## What do these scripts do?
+These scripts give an example of how you can use R to create standardized figures for RoM, and save them in a predefined, ready to be used without further editing.
 
 I have chosen data for freshwater pike (*Esox lucious*) and Baltic turbot (*Scophthalmus maximus*) to illustrate how you can use this code, because it has all potential data for a RoM species (recreational, multiple areas, error bars, landings-by-country etc.). These data have been uploaded on [github](https://github.com/maxlindmark/ROM).
 
 ## How do I use this for my species?
 Most basic RoM figures that all species have in some form can be grouped into three different categories. Each category will have its own script. Once you identify the best category for your species you **should not have to modify the actual plotting code**, instead the aim to is to
 
-+ 1. pre-define your variables
-+ 2. put hash tags in front of stuff you don't need! E.g. if you don't have points to plot, make sure to put a hash tag before the geom_point()-function, which plots points. But do not worry! Instructions for how to do that will be in the described below! The categories are:
++ 1. Pre-define your variables
++ 2. Put hash tags in front of stuff you don't need! E.g. if you don't have points to plot, make sure to put a hash tag before the geom_point()-function, which plots points. But do not worry! Instructions for how to do that will be in the described below! The categories are:
 
 + Fig. 1. Single series
 + Fig. 2. Multiple series
 + Fig. 3. Multiple series and y-axes
 + Fig. 4. Landings by country
 
-Check out the flowchart below to help identify which plot you need. 
+Once you know which plot-type you want, make sure you follow how the data should be structured in your csv-file, and load the theme (see "Define *ggplot* theme").
 
 # Preparation
 ## Load libraries
@@ -84,7 +86,7 @@ Now let's read in the example data (freshwater pike):
 ```{r read data}
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
 dat <- read.csv(
-  text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike2.csv"), 
+  text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"), 
   sep = ";", encoding="UTF-8")
 ```
 
@@ -93,35 +95,24 @@ For your own species, the code would typically look like this if you put the dat
 #dat <- read.csv("pike.csv", sep = ";")
 ```
 
-Inspect the data:
+Inspect the data. It is important that you use the same column names as I do here. "Year" is Year, "error_plus" and "error_minu" are min and max of the confidence interval of the response variable - if you have any, otherwise just type NA. "Group" is our grouping variable, typically different areas and response_variable could be biomass, cpue or abundance. You will specify the unit before plotting, so that everyone can use the same base code, irrespective of which data the species have.
 ```{r inspect}
 head(dat)
 ```
 
-Importing data in the right format is often non-trivial. Here I show you how you can rename a column in case it wasn't read properly! 
-```{r rename columns}
-dat <- dat %>% rename(År = X.U.FEFF.År)
-head(dat)
-```
-
-Columns look better! But we also need to modify the actual levels of the column (i.e. the levels of the lakes). You can see which lakes are in the data by typing: 
-```{r check levels}
-levels(dat$Group)
-```
-
-Clearly we also need to correct the names of the levels, similar to how we did for column names. This is because the beauty of *ggplot* is that all important information in the plot will be inherited from the data.
+Importing data in the right format is often non-trivial. Here I show you how you can rename the  levels of the column Group (i.e. the lake-names in this case). We do this because the beauty of *ggplot* is that all important information in the plot will be inherited from the data.
 ```{r rename levels}
-#levels(dat$Group) <- c("Fritidsfiske", 
-#                        "Hjälmaren", 
-#                        "Mälaren", 
-#                        "Stora sjöarna", 
-#                        "Vänern", 
-#                        "Vättern")
-#head(dat)
-#tail(dat)
+levels(dat$Group) <- c("Fritidsfiske", 
+                       "Hjälmaren", 
+                       "Mälaren", 
+                       "Stora sjöarna", 
+                       "Vänern", 
+                       "Vättern")
+head(dat)
+tail(dat)
 ```
 
-There is one last thing you might need to do with the data before proceeding with plotting, and that is to change the order of the levels in the data. When plotting, *ggplot* sets the levels of the data in alphabetical order, but here we want a specific order: the first "level" should correspond to the total and the last to any special level, such as the recreational data.
+There is one last thing you might need to do with the data before proceeding with plotting, and that is to change the order of the levels in the data. When plotting, *ggplot* sets the levels of the data in alphabetical order, but here we want a specific order: the first "level" should correspond to the total and the last to any special level, such as the recreational data. This is how you would do that, just replace the levels with your own names.
 ```{r rearrange levels}
 dat$Group <- factor(dat$Group,
                      levels = c("Stora sjöarna", 
@@ -158,11 +149,11 @@ theme_rom <- function(base_size = 12, base_family = "") {
                                 margin = margin(b = -3), 
                                 size = 9.6, 
                                 face = "bold"),
-      legend.position = c(0.5, -0.25),
+      legend.position = "bottom",
       legend.text = element_text(size = 8),
-      legend.justification = "bottom", 
       legend.background = element_rect(fill = "transparent"), 
       legend.key = element_rect(fill = "transparent"),
+      legend.box.margin = margin(-25,-25,-25,-25), 
       aspect.ratio = 1,
       plot.margin = unit(c(5.5, 5.5, 20, 5.5), 
                          "points")
@@ -172,30 +163,25 @@ theme_rom <- function(base_size = 12, base_family = "") {
 
 # Let's start making figures!
 ## Fig. 1. Single series
-```{r plot sikloja, fig.width=3.14961, fig.height=3.14961, echo=FALSE, fig.align='center', fig.cap='Siklöja in Mälaren (RoM 2018) - example of a single-series plot'}
-sikloja_path <- "sikloja.png"
-include_graphics(sikloja_path)
-```
-
 For illustration purposes, we will now pretend our example pike data set only is a single series, by filtering it to only contain the area "Stora Sjöarna". If you have a "Fig.1 situation"", your data might look something like this, with one column for year, one for area and one for tonnes.
 ```{r subset single level, message=FALSE, warning=FALSE}
 dat1 <- dat %>% 
-  select(År, Response_variable, Group) %>% 
+  select(Year, Response_variable, Group) %>% 
   filter(Group == "Stora sjöarna")
 
 head(dat1)
 ```
 
-We now need to specify the **y-axis title** and **plot title**. This is what is meant by predefining variables! Instead of changing the plotting code we define what we want it to plot on the axis, for instance**. For the pike data we can set them as:
+We now need to specify the **y-axis title**. For the pike data we can set them as:
 ```{r set variables p1}
 y_axis <- c("Landningar (ton)")
 ```
 
 Now go ahead and create the plot:
 ```{r set plot 1, message=FALSE, warning=FALSE}
-p1 <- ggplot(dat1, aes(År, Response_variable)) +
+p1 <- ggplot(dat1, aes(Year, Response_variable)) +
   geom_bar(data = dat1, 
-           aes(x = År, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = Year, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
   labs(x = "", y = y_axis) + # here's where the axis title is called
   guides(color  = FALSE) +
@@ -214,17 +200,13 @@ ggsave("Fig_1.tiff", plot = p1, dpi = 300, width = 8, height = 8, units = "cm")
 ```
 
 ## Fig. 2. Multiple series
-```{r plot gadda, fig.width=3.14961, fig.height=3.14961, echo=FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a multiple-series plot'}
-gadda_path <- "gadda.png"
-include_graphics(gadda_path)
-```
-
-We now need to specify y-axis titles and plot title, and in addition we need to define how many levels we have! For the pike data we can set them as:
+We now need to specify y-axis title, and in addition we need to define how many levels we have! For the pike data we can set them as:
 ```{r set variables p2}
 y_axis <- c("Landningar (ton)")
-main_series <- c("Stora sjöarna")
-n_lev <- length(unique(dat$Group)) 
-special_series <- c("Fritidsfiske")
+main_series <- c("Stora sjöarna")   # This is the sum of all other series
+n_lev <- length(unique(dat$Group))  # Number of unique lakes
+special_series <- c("Fritidsfiske") # This series must be drawn with points, so we need to
+                                    # separate it from the rest.  
 ```
 
 Note that we in this example use multiple data series, and that one of them is is recreational fisheries that in turn has error bars. **These need to be in columns, so that we have a high (error_plus) and a low (error_minu) column. Note also that they are NA when the Group is not equal to recreational fisheries**
@@ -235,16 +217,16 @@ tail(dat)
 
 And with that set, we can make the second figure, with multiple levels:
 ```{r set plot 2, message=FALSE, warning=FALSE}
-p2 <- ggplot(dat, aes(År, Response_variable, color = Group)) +
+p2 <- ggplot(dat, aes(Year, Response_variable, color = Group)) +
   geom_bar(data = subset(dat, Group == main_series), 
-           aes(x = År, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = Year, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
-  geom_line(data = dat, aes(År, Response_variable, color = Group, alpha = Group), 
+  geom_line(data = dat, aes(Year, Response_variable, color = Group, alpha = Group), 
             size = 1) + 
   geom_point(data = subset(dat, Group == special_series), # here we set our special series
-             aes(År, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
+             aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
   # above the number of level enters (max(n_lev))
-  geom_errorbar(data = dat, aes(x = År, ymin = error_minu, ymax = error_plus, 
+  geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
                                 color = Group), 
                 show.legend = FALSE, width  = 1) +
   scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
@@ -270,14 +252,14 @@ p2
 ```
 
 Now save the file (to your working directory)
-```{r save p2, message=FALSE,warning=FALSE,results="hide",eval=FALSE}
+```{r save p2, message=FALSE,warning=FALSE,results="hide"}
 ggsave("Fig_2.tiff", plot = p2, dpi = 300, width = 8, height = 8, units = "cm")
 ```
 
 Let's say that you have 3 different areas and no special series and no error bars. Then you simply need to hash tag the code the plots those features. We subset the full data to select only the total and lake Mälaren as an example:
 ```{r filter shorter multilevel}
 dat2 <- dat %>% 
-  select(År, Response_variable, Group) %>% 
+  select(Year, Response_variable, Group) %>% 
   filter(Group %in% c("Stora sjöarna", "Mälaren"))
 ```
 
@@ -286,17 +268,17 @@ We now need to update the number of levels in the data:
 n_lev <- length(unique(dat2$Group)) 
 ```
 
-Repeat the general Fig. 2 plot, but remove the points and error bars:
+Repeat the general Fig. 2 plot, but remove the points and error bars using hashtags:
 ```{r set plot 2a, message=FALSE, warning=FALSE}
-p2a <- ggplot(dat2, aes(År, Response_variable, color = Group)) +
+p2a <- ggplot(dat2, aes(Year, Response_variable, color = Group)) +
   geom_bar(data = subset(dat2, Group == main_series), 
-           aes(x = År, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = Year, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
-  geom_line(data = dat2, aes(År, Response_variable, color = Group, alpha = Group), 
+  geom_line(data = dat2, aes(Year, Response_variable, color = Group, alpha = Group), 
             size = 1) + 
   #geom_point(data = subset(dat, Group == special_series), # here we define our special series
-  #           aes(År, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
-  #geom_errorbar(data = dat, aes(x = År, ymin = error_minu, ymax = error_plus, 
+  #           aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
+  #geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
   #                              color = Group), 
   #              show.legend = FALSE, width  = 1) +
   #scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
@@ -320,8 +302,80 @@ p2a <- ggplot(dat2, aes(År, Response_variable, color = Group)) +
 p2a
 ```
 
-# To work on:
+## Fig. 3. Multiple series, two y-axes
+In some cases, you may be forced to plot different series on two different axes, e.g. when you have things in different units (landings and and an index perhaps). Using the pike-data set, we will invent such a scenario treating the "Fritidsfiske" as if on a different unit.
 
-+ secondary y-axis that is not a one-to-one transformation of the primary axes. Possible?
+```{r set variables p3}
+## Increase the value of Fritidsfiske:
+dat3 <- dat
+dat3$Response_variable <- ifelse(dat3$Group == "Fritidsfiske",
+                                 dat3$Response_variable * 100,
+                                 dat3$Response_variable)
+
+# Define plot settings again
+y_axis <- c("Landningar (ton)")
+y_axis2 <- c("Fångst per ansträngning (antal/timme)") #2nd axis title
+main_series <- c("Stora sjöarna")   # This is the sum of all other series
+n_lev <- length(unique(dat3$Group)) # Number of unique lakes
+special_series <- c("Fritidsfiske") # This series must be drawn with points, so we need to
+                                    # separate it from the rest.  
+
+# Define temporary maximum of primary y-axis
+max_yax <- max(subset(dat3, Group == main_series, na.rm = TRUE)$Response_variable)*1.2
+```
+
+And with that set, we can make the second figure, with multiple levels. Hashtag geom_point and geom_errorbar as these are no longer on the same scale.
+```{r set plot 3, message=FALSE, warning=FALSE}
+p3 <- ggplot(dat3, aes(Year, Response_variable, color = Group)) +
+  geom_bar(data = subset(dat3, Group == main_series), 
+           aes(x = Year, y = Response_variable), stat = "identity", 
+           color = pal[1], fill = pal[1],
+           width = 0.6) +
+  geom_line(data = dat3, aes(Year, Response_variable, color = Group, alpha = Group), 
+            size = 1) +
+  #geom_point(data = subset(dat, Group == special_series), # here we set our special series
+  #           aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
+  #geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
+  #                              color = Group), 
+  #              show.legend = FALSE, width  = 1) +
+  scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
+  scale_color_manual(values = pal[seq(1, n_lev)]) +
+  labs(x = "", y = y_axis) +
+  guides(fill  = FALSE,
+         alpha = FALSE,
+         color = guide_legend(nrow = 3, 
+                              title = "",
+                              override.aes = list(size = 1.3, 
+                                                  color = pal[seq(1, n_lev)]),
+                              keywidth = 0.3,
+                              keyheight = 0.1,
+                              default.unit = "inch")) +
+  scale_x_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 6)) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, max_yax), breaks = scales::pretty_breaks(n = 5)) +
+  theme_rom()
+```
+
+Now the trick is to first transform the variable that is to be plotted on the second y-axis to a similar scale, and then reset the scale to the original values::
+```{r plot 3 second y-axis, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) with secondary y-axis- example of a multiple-series plot using R'}
+p3f <- p3 + 
+  geom_point(data = subset(dat3, Group == special_series),
+             aes(Year, Response_variable/100), size = 1, color = pal[max(n_lev)]) +
+  scale_y_continuous(sec.axis = sec_axis(~.*100, name = y_axis2), 
+                     expand = c(0, 0), breaks = scales::pretty_breaks(n = 5),
+                     limits = c(0, max_yax)) 
+
+```
+
+```{r plot 3, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) with secondary y-axes- example of a multiple-series plot using R'}
+p3f
+```
+
+Now save the file (to your working directory)
+```{r save p3, message=FALSE,warning=FALSE,results="hide"}
+ggsave("Fig_3.tiff", plot = p3f, dpi = 300, width = 8, height = 8, units = "cm")
+```
+
+This is not a very straightforward plot to make. First you need to manually find a value that scales the differnt units so they become close (see above when making p3f). What's more of a challenge however is that we no longer have a full legend. This is because in all previous plots, the legend is inheretided from the aes, where we set color = group. We need to exclude the group here when first making the plots, because theNote we also did not include errorbars.
 
 
