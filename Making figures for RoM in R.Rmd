@@ -84,7 +84,7 @@ Now let's read in the example data (freshwater pike):
 ```{r read data}
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
 dat <- read.csv(
-  text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"), 
+  text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike2.csv"), 
   sep = ";", encoding="UTF-8")
 ```
 
@@ -98,10 +98,9 @@ Inspect the data:
 head(dat)
 ```
 
-Users will have different encoding which affects how certain characters are read. Instead of forcing everyone to use the same encoding, I'm showing you how to rename columns. It is **VERY** important that you use these column names because they will determine which level gets which colour and line (if you insist on other column names you have to modify the plot code)!
+Importing data in the right format is often non-trivial. Here I show you how you can rename a column in case it wasn't read properly! 
 ```{r rename columns}
-dat <- dat %>% rename(Område = Omr.e5.de,
-                      År     = X.c5.r)
+dat <- dat %>% rename(År = X.U.FEFF.År)
 head(dat)
 ```
 
