@@ -131,7 +131,7 @@ Now that you have loaded and cleaned up your or the example data, we can move on
 pal <- c("#56B4E9", "#009E73", "#F0E442", "#0072B2", "#E69F00", "#D55E00")
 ```
 
-Second, we define the theme we will use for all plots. This is made to match as closely as possible to the RoM style. This applies to all figures styles. In the future this function should be sourced but here I show it in full. Make sure you copy paste this function and run it. 
+Second, we define the theme we will use for all plots. This is made to match as closely as possible to the RoM style. This applies to all figures styles. 
 ```{r define theme}
 theme_rom <- function(base_size = 12, base_family = "") {
   theme_bw(base_size = 12, base_family = "") +
@@ -159,6 +159,13 @@ theme_rom <- function(base_size = 12, base_family = "") {
                          "points")
       )
 }
+```
+
+You can also source the theme-function directly from github. That way you'll always have the latest version!
+```{r source theme function,eval=TRUE}
+script <- getURL("https://raw.githubusercontent.com/maxlindmark/scaling/master/R/raincloud_plot.R", ssl.verifypeer = FALSE)
+
+eval(parse(text = script))
 ```
 
 # Let's start making figures!
@@ -376,6 +383,47 @@ Now save the file (to your working directory)
 ggsave("Fig_3.tiff", plot = p3f, dpi = 300, width = 8, height = 8, units = "cm")
 ```
 
-This is not a very straightforward plot to make. First you need to manually find a value that scales the differnt units so they become close (see above when making p3f). What's more of a challenge however is that we no longer have a full legend. This is because in all previous plots, the legend is inheretided from the aes, where we set color = group. We need to exclude the group here when first making the plots, because theNote we also did not include errorbars.
+This is not a very straightforward plot to make. First you need to manually find a value that scales the differnt units so they become close (see above when making p3f). When scaling back you need to verify all the data-points are within the plot range (which now is manual! By default it's based on your data but we need to bypass that). Also, in order to inheret the legend, we need at least one geom with all data we want in the legend. This is geom_line in the above case. In order to not get a gigantic primary y-axis, we set it manually and simple plot the series that is on a different scale outside the plot window. So, many things to keep in mind when/if adapting this code to your data!
 
 
+## Fig. 4. Landings by country
+For illustration purposes, we will now pretend our example pike data set only is a single series, by filtering it to only contain the area "Stora Sjöarna". If you have a "Fig.1 situation"", your data might look something like this, with one column for year, one for area and one for tonnes.
+```{r subset single level, message=FALSE, warning=FALSE}
+dat1 <- dat %>% 
+  select(Year, Response_variable, Group) %>% 
+  filter(Group == "Stora sjöarna")
+
+head(dat1)
+```
+
+We now need to specify the **y-axis title**. For the pike data we can set them as:
+```{r set variables p1}
+y_axis <- c("Landningar (ton)")
+```
+
+Now go ahead and create the plot:
+```{r set plot 1, message=FALSE, warning=FALSE}
+p1 <- ggplot(dat1, aes(Year, Response_variable)) +
+  geom_bar(data = dat1, 
+           aes(x = Year, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
+           width = 0.6) +
+  labs(x = "", y = y_axis) + # here's where the axis title is called
+  guides(color  = FALSE) +
+  scale_x_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 6)) +
+  scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 5)) +
+  theme_rom()                # here we call our predefined theme
+```
+
+```{r plot 1, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a single-series plot using R'}
+p1
+```
+
+Save the file (to your working directory)
+```{r save p1, message=FALSE, warning=FALSE, results="hide"}
+ggsave("Fig_1.tiff", plot = p1, dpi = 300, width = 8, height = 8, units = "cm")
+```
+
+
+
+land <- read.csv("Landingsbycountry_Baltic_Turbot.csv",header=T,check.names=FALSE,sep=";")
+stock <- land %>% gather(land,landningar,2:10,na.rm = TRUE)
