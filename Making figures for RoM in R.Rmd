@@ -90,7 +90,7 @@ dat <- read.csv(
 
 For your own species, the code would typically look like this if you put the data inside your R Project folder:
 ```{r read your own data}
-dat <- read.csv("pike.csv", sep = ";")
+#dat <- read.csv("pike.csv", sep = ";")
 ```
 
 Inspect the data:
@@ -106,12 +106,12 @@ head(dat)
 
 Columns look better! But we also need to modify the actual levels of the column (i.e. the levels of the lakes). You can see which lakes are in the data by typing: 
 ```{r check levels}
-levels(dat$Område)
+levels(dat$Group)
 ```
 
 Clearly we also need to correct the names of the levels, similar to how we did for column names. This is because the beauty of *ggplot* is that all important information in the plot will be inherited from the data.
 ```{r rename levels}
-#levels(dat$Område) <- c("Fritidsfiske", 
+#levels(dat$Group) <- c("Fritidsfiske", 
 #                        "Hjälmaren", 
 #                        "Mälaren", 
 #                        "Stora sjöarna", 
@@ -123,7 +123,7 @@ Clearly we also need to correct the names of the levels, similar to how we did f
 
 There is one last thing you might need to do with the data before proceeding with plotting, and that is to change the order of the levels in the data. When plotting, *ggplot* sets the levels of the data in alphabetical order, but here we want a specific order: the first "level" should correspond to the total and the last to any special level, such as the recreational data.
 ```{r rearrange levels}
-dat$Område <- factor(dat$Område,
+dat$Group <- factor(dat$Group,
                      levels = c("Stora sjöarna", 
                                 "Vänern", 
                                 "Vättern", 
@@ -180,8 +180,8 @@ include_graphics(sikloja_path)
 For illustration purposes, we will now pretend our example pike data set only is a single series, by filtering it to only contain the area "Stora Sjöarna". If you have a "Fig.1 situation"", your data might look something like this, with one column for year, one for area and one for tonnes.
 ```{r subset single level, message=FALSE, warning=FALSE}
 dat1 <- dat %>% 
-  select(År, Biomassa, Område) %>% 
-  filter(Område == "Stora sjöarna")
+  select(År, Response_variable, Group) %>% 
+  filter(Group == "Stora sjöarna")
 
 head(dat1)
 ```
@@ -193,9 +193,9 @@ y_axis <- c("Landningar (ton)")
 
 Now go ahead and create the plot:
 ```{r set plot 1, message=FALSE, warning=FALSE}
-p1 <- ggplot(dat1, aes(År, Biomassa)) +
+p1 <- ggplot(dat1, aes(År, Response_variable)) +
   geom_bar(data = dat1, 
-           aes(x = År, y = Biomassa), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = År, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
   labs(x = "", y = y_axis) + # here's where the axis title is called
   guides(color  = FALSE) +
@@ -223,11 +223,11 @@ We now need to specify y-axis titles and plot title, and in addition we need to 
 ```{r set variables p2}
 y_axis <- c("Landningar (ton)")
 main_series <- c("Stora sjöarna")
-n_lev <- length(unique(dat$Område)) 
+n_lev <- length(unique(dat$Group)) 
 special_series <- c("Fritidsfiske")
 ```
 
-Note that we in this example use multiple data series, and that one of them is is recreational fisheries that in turn has error bars. **These need to be in columns, so that we have a high (error_plus) and a low (error_minu) column. Note also that they are NA when the Område is not equal to recreational fisheries**
+Note that we in this example use multiple data series, and that one of them is is recreational fisheries that in turn has error bars. **These need to be in columns, so that we have a high (error_plus) and a low (error_minu) column. Note also that they are NA when the Group is not equal to recreational fisheries**
 ```{r inspect data}
 head(dat) 
 tail(dat)
@@ -235,17 +235,17 @@ tail(dat)
 
 And with that set, we can make the second figure, with multiple levels:
 ```{r set plot 2, message=FALSE, warning=FALSE}
-p2 <- ggplot(dat, aes(År, Biomassa, color = Område)) +
-  geom_bar(data = subset(dat, Område == main_series), 
-           aes(x = År, y = Biomassa), stat = "identity", color = pal[1], fill = pal[1], 
+p2 <- ggplot(dat, aes(År, Response_variable, color = Group)) +
+  geom_bar(data = subset(dat, Group == main_series), 
+           aes(x = År, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
-  geom_line(data = dat, aes(År, Biomassa, color = Område, alpha = Område), 
+  geom_line(data = dat, aes(År, Response_variable, color = Group, alpha = Group), 
             size = 1) + 
-  geom_point(data = subset(dat, Område == special_series), # here we set our special series
-             aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + 
+  geom_point(data = subset(dat, Group == special_series), # here we set our special series
+             aes(År, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
   # above the number of level enters (max(n_lev))
   geom_errorbar(data = dat, aes(x = År, ymin = error_minu, ymax = error_plus, 
-                                color = Område), 
+                                color = Group), 
                 show.legend = FALSE, width  = 1) +
   scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
@@ -277,27 +277,27 @@ ggsave("Fig_2.tiff", plot = p2, dpi = 300, width = 8, height = 8, units = "cm")
 Let's say that you have 3 different areas and no special series and no error bars. Then you simply need to hash tag the code the plots those features. We subset the full data to select only the total and lake Mälaren as an example:
 ```{r filter shorter multilevel}
 dat2 <- dat %>% 
-  select(År, Biomassa, Område) %>% 
-  filter(Område %in% c("Stora sjöarna", "Mälaren"))
+  select(År, Response_variable, Group) %>% 
+  filter(Group %in% c("Stora sjöarna", "Mälaren"))
 ```
 
 We now need to update the number of levels in the data:
 ```{r update variables}
-n_lev <- length(unique(dat2$Område)) 
+n_lev <- length(unique(dat2$Group)) 
 ```
 
 Repeat the general Fig. 2 plot, but remove the points and error bars:
 ```{r set plot 2a, message=FALSE, warning=FALSE}
-p2a <- ggplot(dat2, aes(År, Biomassa, color = Område)) +
-  geom_bar(data = subset(dat2, Område == main_series), 
-           aes(x = År, y = Biomassa), stat = "identity", color = pal[1], fill = pal[1], 
+p2a <- ggplot(dat2, aes(År, Response_variable, color = Group)) +
+  geom_bar(data = subset(dat2, Group == main_series), 
+           aes(x = År, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
-  geom_line(data = dat2, aes(År, Biomassa, color = Område, alpha = Område), 
+  geom_line(data = dat2, aes(År, Response_variable, color = Group, alpha = Group), 
             size = 1) + 
-  #geom_point(data = subset(dat, Område == special_series), # here we define our special series
-  #           aes(År, Biomassa, fill = Område), size = 2, color = pal[max(n_lev)]) + 
+  #geom_point(data = subset(dat, Group == special_series), # here we define our special series
+  #           aes(År, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
   #geom_errorbar(data = dat, aes(x = År, ymin = error_minu, ymax = error_plus, 
-  #                              color = Område), 
+  #                              color = Group), 
   #              show.legend = FALSE, width  = 1) +
   #scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
