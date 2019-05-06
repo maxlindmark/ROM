@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Introduction
-*First, this is a first draft and a work in progress so any feedback on this document or the figures are highly appreciated!*
+*First, this is a first draft and a work in progress so any feedback on this document or the figures are highly appreciated!* This document has been put together by Max Lindmark (K-lab), with code and input from Massimiliano Cardinale <massimiliano.cardinale@slu.se> (H-lab) and Martin Ogonowski <martin.ogonowski@slu.se> (Sö.lab). We are also the R-contact-persons for RoM work, so please send any questions to your corresponding lab-contact. And if it's a general R-question, feel free to email pur R-mailing list <Aqua r-users <aqua-r-users@slu.se>.
 
 ## Why R?
 The main argument for using code to create RoM figures is to standardize them across species and to do so while limiting repetitive work (you only need to write a script once!). These figures here are made with the package *ggplot2*, which is a very powerful tool for making multilevel figures and allows for easy modification via the theme-function. 
@@ -38,7 +38,7 @@ Lastly, this is an R Markdown document. This means R-code is text with grey back
 ## What does this script do?
 This script gives an example of how you can use R to create standardized figures in R, and save them in a given resolution as a *.tiff*, ready to be used without further editing.
 
-I have chosen data for freshwater pike (*Esox lucious*) to illustrate how you can use this code, because it has all potential data for a RoM species (recreational, multiple areas, error bars etc.). These data have been uploaded on [github](https://github.com/maxlindmark/ROM).
+I have chosen data for freshwater pike (*Esox lucious*) and Baltic turbot (*Scophthalmus maximus*) to illustrate how you can use this code, because it has all potential data for a RoM species (recreational, multiple areas, error bars, landings-by-country etc.). These data have been uploaded on [github](https://github.com/maxlindmark/ROM).
 
 ## How do I use this for my species?
 Most basic RoM figures that all species have in some form can be grouped into three different categories. Each category will have its own script. Once you identify the best category for your species you **should not have to modify the actual plotting code**, instead the aim to is to
@@ -48,13 +48,10 @@ Most basic RoM figures that all species have in some form can be grouped into th
 
 + Fig. 1. Single series
 + Fig. 2. Multiple series
-+ Fig. 3. Multiple series and y-axes - ***not yet implemented, see end of document!***
++ Fig. 3. Multiple series and y-axes
++ Fig. 4. Landings by country
 
 Check out the flowchart below to help identify which plot you need. 
-
-![How to select the best template for **your** species](Flow_chart.png)
-
-Once you identify which plot type you will use, you can read about how to prepare your data to use the script. A standardized way of saving data is key for making any kind of standardized script! The data structure is described in section **Preparation**.
 
 # Preparation
 ## Load libraries
@@ -73,8 +70,10 @@ pkgs <- c("devtools",
           "png", 
           "knitr")
 
-# Install packages
-#install.packages(pkgs) # remove the hashtag if don't have them installed
+# Install packages if not installed
+if (length(setdiff(pkgs, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(pkgs, rownames(installed.packages())))
+}
 
 # Load all packages
 invisible(lapply(pkgs, function(x) require(x, character.only = T, quietly = T)))
@@ -85,13 +84,13 @@ Now let's read in the example data (freshwater pike):
 ```{r read data}
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
 dat <- read.csv(
-  text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv), 
-  sep = ";")
+  text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"), 
+  sep = ";", encoding="UTF-8")
 ```
 
 For your own species, the code would typically look like this if you put the data inside your R Project folder:
 ```{r read your own data}
-#dat <- read.csv("pike.csv", sep = ";")
+dat <- read.csv("pike.csv", sep = ";")
 ```
 
 Inspect the data:
@@ -101,9 +100,9 @@ head(dat)
 
 Users will have different encoding which affects how certain characters are read. Instead of forcing everyone to use the same encoding, I'm showing you how to rename columns. It is **VERY** important that you use these column names because they will determine which level gets which colour and line (if you insist on other column names you have to modify the plot code)!
 ```{r rename columns}
-#dat <- dat %>% rename(Område = Omr.e5.de,
-#                      År     = X.c5.r)
-#head(dat)
+dat <- dat %>% rename(Område = Omr.e5.de,
+                      År     = X.c5.r)
+head(dat)
 ```
 
 Columns look better! But we also need to modify the actual levels of the column (i.e. the levels of the lakes). You can see which lakes are in the data by typing: 
