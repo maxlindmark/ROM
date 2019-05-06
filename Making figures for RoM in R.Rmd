@@ -43,15 +43,16 @@ These scripts give an example of how you can use R to create standardized figure
 I have chosen data for freshwater pike (*Esox lucious*) and Baltic turbot (*Scophthalmus maximus*) to illustrate how you can use this code, because it has all potential data for a RoM species (recreational, multiple areas, error bars, landings-by-country etc.). These data have been uploaded on [github](https://github.com/maxlindmark/ROM).
 
 ## How do I use this for my species?
-Most basic RoM figures that all species have in some form can be grouped into three different categories. Each category will have its own script. Once you identify the best category for your species you **should not have to modify the actual plotting code**, instead the aim to is to
+Most basic RoM figures that all species have in some form can be grouped into different categories. Each category will have its own script. Once you identify the best category for your species you should not have to modify the actual plotting code that much, as a minimum you only have to:
 
-+ 1. Pre-define your variables
-+ 2. Put hash tags in front of stuff you don't need! E.g. if you don't have points to plot, make sure to put a hash tag before the geom_point()-function, which plots points. But do not worry! Instructions for how to do that will be in the described below! The categories are:
+(**1**) Pre-define your variables (set y-axis names) and (**2**) If a multi-series plot: put hash tags in front of stuff you don't need! E.g. if you don't have points to plot, make sure to put a hash tag before the geom_point()-function, which plots points. But do not worry! Instructions for how to do that will be in the described below! 
+
+The categories are:
 
 + Fig. 1. Single series
 + Fig. 2. Multiple series
 + Fig. 3. Multiple series and y-axes
-+ Fig. 4. Landings by country
++ Fig. 4. Landings-by-country
 
 Once you know which plot-type you want, make sure you follow how the data should be structured in your csv-file, and load the theme (see "Define *ggplot* theme").
 
@@ -87,7 +88,7 @@ Now let's read in the example data (freshwater pike):
 # Go to https://github.com/maxlindmark/ROM to view the data in the browser
 dat <- read.csv(
   text = getURL("https://raw.githubusercontent.com/maxlindmark/ROM/master/pike.csv"), 
-  sep = ";", encoding="UTF-8")
+  sep = ";")
 ```
 
 For your own species, the code would typically look like this if you put the data inside your R Project folder:
@@ -163,7 +164,8 @@ theme_rom <- function(base_size = 12, base_family = "") {
 
 You can also source the theme-function directly from github. That way you'll always have the latest version!
 ```{r source theme function,eval=TRUE}
-script <- getURL("https://raw.githubusercontent.com/maxlindmark/scaling/master/R/raincloud_plot.R", ssl.verifypeer = FALSE)
+u<-c("https://raw.githubusercontent.com/maxlindmark/scaling/master/R/raincloud_plot.R")
+script <- getURL(u, ssl.verifypeer = FALSE)
 
 eval(parse(text = script))
 ```
@@ -188,7 +190,8 @@ Now go ahead and create the plot:
 ```{r set plot 1, message=FALSE, warning=FALSE}
 p1 <- ggplot(dat1, aes(Year, Response_variable)) +
   geom_bar(data = dat1, 
-           aes(x = Year, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = Year, y = Response_variable), 
+           stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
   labs(x = "", y = y_axis) + # here's where the axis title is called
   guides(color  = FALSE) +
@@ -197,7 +200,7 @@ p1 <- ggplot(dat1, aes(Year, Response_variable)) +
   theme_rom()                # here we call our predefined theme
 ```
 
-```{r plot 1, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a single-series plot using R'}
+```{r plot 1, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" - example of a single-series plot using R'}
 p1
 ```
 
@@ -226,12 +229,14 @@ And with that set, we can make the second figure, with multiple levels:
 ```{r set plot 2, message=FALSE, warning=FALSE}
 p2 <- ggplot(dat, aes(Year, Response_variable, color = Group)) +
   geom_bar(data = subset(dat, Group == main_series), 
-           aes(x = Year, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = Year, y = Response_variable), 
+           stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
   geom_line(data = dat, aes(Year, Response_variable, color = Group, alpha = Group), 
             size = 1) + 
   geom_point(data = subset(dat, Group == special_series), # here we set our special series
-             aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
+             aes(Year, Response_variable, fill = Group), 
+             size = 2, color = pal[max(n_lev)]) + 
   # above the number of level enters (max(n_lev))
   geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
                                 color = Group), 
@@ -254,7 +259,7 @@ p2 <- ggplot(dat, aes(Year, Response_variable, color = Group)) +
   theme_rom()
 ```
 
-```{r plot 2, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R'}
+```{r plot 2, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes - example of a multiple-series plot using R'}
 p2
 ```
 
@@ -279,16 +284,17 @@ Repeat the general Fig. 2 plot, but remove the points and error bars using hasht
 ```{r set plot 2a, message=FALSE, warning=FALSE}
 p2a <- ggplot(dat2, aes(Year, Response_variable, color = Group)) +
   geom_bar(data = subset(dat2, Group == main_series), 
-           aes(x = Year, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
+           aes(x = Year, y = Response_variable), 
+           stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
   geom_line(data = dat2, aes(Year, Response_variable, color = Group, alpha = Group), 
             size = 1) + 
-  #geom_point(data = subset(dat, Group == special_series), # here we define our special series
-  #           aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
-  #geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
-  #                              color = Group), 
-  #              show.legend = FALSE, width  = 1) +
-  #scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
+#geom_point(data = subset(dat, Group == special_series), # here we define our special series
+#           aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
+#geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
+#                              color = Group), 
+#              show.legend = FALSE, width  = 1) +
+#scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   labs(x = "", y = y_axis) +
   guides(fill  = FALSE,
@@ -305,7 +311,7 @@ p2a <- ggplot(dat2, aes(Year, Response_variable, color = Group)) +
   theme_rom()
 ```
 
-```{r plot 2a, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) - example of a multiple-series plot using R'}
+```{r plot 2a, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes - example of a multiple-series plot using R'}
 p2a
 ```
 
@@ -340,11 +346,11 @@ p3 <- ggplot(dat3, aes(Year, Response_variable, color = Group)) +
            width = 0.6) +
   geom_line(data = dat3, aes(Year, Response_variable, color = Group, alpha = Group), 
             size = 1) +
-  #geom_point(data = subset(dat, Group == special_series), # here we set our special series
-  #           aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
-  #geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
-  #                              color = Group), 
-  #              show.legend = FALSE, width  = 1) +
+#geom_point(data = subset(dat, Group == special_series), # here we set our special series
+#           aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
+#geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
+#                              color = Group), 
+#              show.legend = FALSE, width  = 1) +
   scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   labs(x = "", y = y_axis) +
@@ -364,7 +370,7 @@ p3 <- ggplot(dat3, aes(Year, Response_variable, color = Group)) +
 ```
 
 Now the trick is to first transform the variable that is to be plotted on the second y-axis to a similar scale, and then reset the scale to the original values::
-```{r plot 3 second y-axis, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) with secondary y-axis- example of a multiple-series plot using R'}
+```{r plot 3 second y-axis, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes with secondary y-axis- example of a multiple-series plot using R'}
 p3f <- p3 + 
   geom_point(data = subset(dat3, Group == special_series),
              aes(Year, Response_variable/100), size = 1, color = pal[max(n_lev)]) +
@@ -374,7 +380,7 @@ p3f <- p3 +
 
 ```
 
-```{r plot 3, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes (RoM 2018) with secondary y-axes- example of a multiple-series plot using R'}
+```{r plot 3, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes with secondary y-axes- example of a multiple-series plot using R'}
 p3f
 ```
 
@@ -387,43 +393,72 @@ This is not a very straightforward plot to make. First you need to manually find
 
 
 ## Fig. 4. Landings by country
-For illustration purposes, we will now pretend our example pike data set only is a single series, by filtering it to only contain the area "Stora Sjöarna". If you have a "Fig.1 situation"", your data might look something like this, with one column for year, one for area and one for tonnes.
-```{r subset single level, message=FALSE, warning=FALSE}
-dat1 <- dat %>% 
-  select(Year, Response_variable, Group) %>% 
-  filter(Group == "Stora sjöarna")
+For this example, we will use Baltic turbot data:
+```{r read turbot data, message=FALSE, warning=FALSE}
+u<-c("https://raw.githubusercontent.com/maxlindmark/ROM/master/Landingsbycountry_Baltic_Turbot.csv")
+tur <- read.csv(
+  text = getURL(u), 
+  sep = ";")
 
-head(dat1)
+head(tur)
+
+# Rename column
+tur <- tur %>% rename("Andra länder" = "Andra.l.e4.nder")
+
+# Make data long (1 row, 1 observation)
+tur_l <- tur %>% gather(land, landningar, 2:11, na.rm = TRUE)
+
+# Show total tonnes by country
+tur_l %>% 
+  group_by(land) %>% 
+  summarize(tot_land = sum(landningar)) %>% 
+  arrange(desc(tot_land))
+
+# We will only plot the top 5 countries and the total. Other countries will
+# be regrouped to "Andra länder"
+unique(tur_l$land)
+
+tur_l$land <- ifelse(tur_l$land %in% c("Litauen", 
+                                       "Lettland",
+                                       "Estland",
+                                       "Finland"),
+                     "Andra länder",
+                     tur_l$land)
+
+unique(tur_l$land)
+
 ```
 
-We now need to specify the **y-axis title**. For the pike data we can set them as:
-```{r set variables p1}
-y_axis <- c("Landningar (ton)")
+We now need to specify the **y-axis title**. For the turbot landings data we can set them as:
+```{r set variables p4}
+y_axis <- c("Landningar (1000 ton)")
 ```
 
 Now go ahead and create the plot:
-```{r set plot 1, message=FALSE, warning=FALSE}
-p1 <- ggplot(dat1, aes(Year, Response_variable)) +
-  geom_bar(data = dat1, 
-           aes(x = Year, y = Response_variable), stat = "identity", color = pal[1], fill = pal[1], 
-           width = 0.6) +
-  labs(x = "", y = y_axis) + # here's where the axis title is called
-  guides(color  = FALSE) +
-  scale_x_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 6)) +
-  scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 5)) +
-  theme_rom()                # here we call our predefined theme
+```{r set plot 4, message=FALSE, warning=FALSE}
+p4 <- ggplot(tur_l, aes(x = Year, y = landningar/1000, fill = land)) +
+  geom_bar(stat = "identity") + 
+  labs(x = "", y = y_axis) +
+  scale_fill_manual(values = pal) + 
+  labs(x = NULL) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  guides(fill = guide_legend(nrow = 2, 
+                             title = "",
+                             keywidth = 0.1,
+                             keyheight = 0.03,
+                             default.unit = "inch")) +
+  theme_rom() +
+  theme(legend.box.margin = margin(-15,-15,-15,-15)) # Note we here overwrite
+                                                     # the default in the RoM-theme  
 ```
 
-```{r plot 1, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Gädda in the "Great Lakes" (RoM 2018) - example of a single-series plot using R'}
-p1
+```{r plot 4, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Landings of turbot in the Baltic Sea - example of a single-series plot using R'}
+p4
 ```
 
 Save the file (to your working directory)
-```{r save p1, message=FALSE, warning=FALSE, results="hide"}
-ggsave("Fig_1.tiff", plot = p1, dpi = 300, width = 8, height = 8, units = "cm")
+```{r save p4, message=FALSE, warning=FALSE, results="hide"}
+ggsave("Fig_4.tiff", plot = p4, dpi = 300, width = 8, height = 8, units = "cm")
 ```
 
-
-
-land <- read.csv("Landingsbycountry_Baltic_Turbot.csv",header=T,check.names=FALSE,sep=";")
-stock <- land %>% gather(land,landningar,2:10,na.rm = TRUE)
