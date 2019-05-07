@@ -332,13 +332,13 @@ dat3$Response_variable <- ifelse(dat3$Group == "Fritidsfiske",
                                  dat3$Response_variable * 100,
                                  dat3$Response_variable)
 
-## And the errorbars... 
+## And the errorbars...  
 dat3$error_minus <- dat3$error_minus * 100
 dat3$error_plus <- dat3$error_plus * 100
 
 # Define plot settings again
 y_axis <- c("Landningar (ton)")
-y_axis2 <- c("Fångst per ansträngning (antal/timme)") #2nd axis title
+y_axis2 <- c("Fångst per ansträngning (antal/timme)") # 2nd axis title
 main_series <- c("Stora sjöarna")   # This is the sum of all other series
 n_lev <- length(unique(dat3$Group)) # Number of unique lakes
 special_series <- c("Fritidsfiske") # This series must be drawn with points, so we need to
@@ -346,7 +346,7 @@ special_series <- c("Fritidsfiske") # This series must be drawn with points, so 
 
 # Define temporary maximum of primary y-axis
 max_yax <- max(na.omit(subset(dat3, Group == main_series))$Response_variable,
-               na.omit(subset(dat3, Group == special_series))$error_plus/100)*1.2
+               na.omit(subset(dat3, Group == special_series))$error_plus/100)*1.1
 ```
 
 And with that set, we can make the second figure, with multiple levels. Hashtag geom_point and geom_errorbar as these are no longer on the same scale.
@@ -393,7 +393,9 @@ p3f <- p3 +
 
   scale_y_continuous(sec.axis = sec_axis(~.*100, name = y_axis2), 
                      expand = c(0, 0), breaks = scales::pretty_breaks(n = 5),
-                     limits = c(0, max_yax))
+                     limits = c(0, max_yax)) +
+  theme(axis.title.y.right = element_text(angle = 90)) # make direction of 2nd axis
+                                                       # title same as 1st!
 ```
 
 ```{r plot 3, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes with secondary y-axes- example of a multiple-series plot using R'}
