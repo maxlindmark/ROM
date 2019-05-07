@@ -1,5 +1,5 @@
 ---
-title: "Making figures for RoM in R"
+title: "Making figures for Fisk- och skaldjursöversikt i hav och sötvatten - resursöversikt in R"
 author: "Max Lindmark"
 date: "28 april 2019"
 output: 
@@ -58,7 +58,7 @@ Once you know which plot-type you want, make sure you follow how the data should
 
 # Preparation
 ## Load libraries
-Before starting, we need to install a few packages:
+If you haven't done it already, you can now open a new script (*File->New Script*) and copy paste code chunks into that. The first thing to do is to install a few packages (this might take a moment!):
 ```{r read packages, message=FALSE, warning=FALSE}
 rm(list = ls()) # clear the workspace from objects
 
@@ -96,9 +96,11 @@ For your own species, the code would typically look like this if you put the dat
 #dat <- read.csv("pike.csv", sep = ";")
 ```
 
-Inspect the data. It is important that you use the same column names as I do here. "Year" is Year, "error_plus" and "error_minu" are min and max of the confidence interval of the response variable - if you have any, otherwise just type NA. "Group" is our grouping variable, typically different areas and response_variable could be biomass, cpue or abundance. You will specify the unit before plotting, so that everyone can use the same base code, irrespective of which data the species have.
+Inspect the data. It is important that you use the same column names as I do here. "Year" is Year, "error_plus" and "error_minus" are min and max of the confidence interval of the response variable - if you have any, otherwise just type NA. "Group" is our grouping variable, typically different areas and response_variable could be biomass, cpue or abundance. You will specify the unit before plotting, so that everyone can use the same base code, irrespective of which data the species have.
 ```{r inspect}
 head(dat)
+# list(dat) # This function shows all the data,
+# for you to see the levels in the Group column
 ```
 
 Importing data in the right format is often non-trivial. Here I show you how you can rename the  levels of the column Group (i.e. the lake-names in this case). We do this because the beauty of *ggplot* is that all important information in the plot will be inherited from the data.
@@ -160,6 +162,10 @@ theme_rom <- function(base_size = 12, base_family = "") {
                          "points")
       )
 }
+
+# And also replace points with commas in the plot
+options(OutDec= ",")
+
 ```
 
 You can also source the theme-function directly from github. That way you'll always have the latest version!
@@ -219,13 +225,14 @@ special_series <- c("Fritidsfiske") # This series must be drawn with points, so 
                                     # separate it from the rest.  
 ```
 
-Note that we in this example use multiple data series, and that one of them is is recreational fisheries that in turn has error bars. **These need to be in columns, so that we have a high (error_plus) and a low (error_minu) column. Note also that they are NA when the Group is not equal to recreational fisheries**
+Note that we in this example use multiple data series, and that one of them is recreational fisheries that in turn has error bars. **These need to be in columns, so that we have a high (error_plus) and a low (error_minuss) column. Note also that they are NA when the Group is not equal to recreational fisheries**
 ```{r inspect data}
 head(dat) 
 tail(dat)
 ```
 
-And with that set, we can make the second figure, with multiple levels:
+And with that set, we can make the second figure, with multiple levels. The key to have a single legend is to have a layer that has all Groups. In this case it's the line. But we don't want all series to have lines (not the point or bar series). We can overcome this by setting those series to have full transparancy. We control that in the scale_alpha_manual()-function. 0 means transparant and 1 is normal. The override.aes part in guides() makes sure this transparancy is not inherited in the legend!
+
 ```{r set plot 2, message=FALSE, warning=FALSE}
 p2 <- ggplot(dat, aes(Year, Response_variable, color = Group)) +
   geom_bar(data = subset(dat, Group == main_series), 
@@ -238,10 +245,10 @@ p2 <- ggplot(dat, aes(Year, Response_variable, color = Group)) +
              aes(Year, Response_variable, fill = Group), 
              size = 2, color = pal[max(n_lev)]) + 
   # above the number of level enters (max(n_lev))
-  geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
+  geom_errorbar(data = dat, aes(x = Year, ymin = error_minus, ymax = error_plus, 
                                 color = Group), 
                 show.legend = FALSE, width  = 1) +
-  scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
+  scale_alpha_manual(values = c(0, rep(1, (n_lev-2)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   # above we set the line between rec fisheries transparent
   labs(x = "", y = y_axis) +
@@ -280,21 +287,21 @@ We now need to update the number of levels in the data:
 n_lev <- length(unique(dat2$Group)) 
 ```
 
-Repeat the general Fig. 2 plot, but remove the points and error bars using hashtags:
+Repeat the general Fig. 2 plot, but remove the points and error bars using hashtags. (see also changes to scale_alpha_manual()!)
 ```{r set plot 2a, message=FALSE, warning=FALSE}
 p2a <- ggplot(dat2, aes(Year, Response_variable, color = Group)) +
   geom_bar(data = subset(dat2, Group == main_series), 
            aes(x = Year, y = Response_variable), 
            stat = "identity", color = pal[1], fill = pal[1], 
            width = 0.6) +
-  geom_line(data = dat2, aes(Year, Response_variable, color = Group, alpha = Group), 
+  geom_line(data = dat2, aes(Year, Response_variable, color = Group, alpha = Group), # remove alpha = Group here
             size = 1) + 
 #geom_point(data = subset(dat, Group == special_series), # here we define our special series
 #           aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
-#geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
+#geom_errorbar(data = dat, aes(x = Year, ymin = error_minus, ymax = error_plus, 
 #                              color = Group), 
 #              show.legend = FALSE, width  = 1) +
-#scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
+  scale_alpha_manual(values = c(0, 1)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   labs(x = "", y = y_axis) +
   guides(fill  = FALSE,
@@ -348,7 +355,7 @@ p3 <- ggplot(dat3, aes(Year, Response_variable, color = Group)) +
             size = 1) +
 #geom_point(data = subset(dat, Group == special_series), # here we set our special series
 #           aes(Year, Response_variable, fill = Group), size = 2, color = pal[max(n_lev)]) + 
-#geom_errorbar(data = dat, aes(x = Year, ymin = error_minu, ymax = error_plus, 
+#geom_errorbar(data = dat, aes(x = Year, ymin = error_minus, ymax = error_plus, 
 #                              color = Group), 
 #              show.legend = FALSE, width  = 1) +
   scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
@@ -370,13 +377,14 @@ p3 <- ggplot(dat3, aes(Year, Response_variable, color = Group)) +
 ```
 
 Now the trick is to first transform the variable that is to be plotted on the second y-axis to a similar scale, and then reset the scale to the original values::
-```{r plot 3 second y-axis, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes with secondary y-axis- example of a multiple-series plot using R'}
+```{r plot 3 updated, second y-axis}
 p3f <- p3 + 
   geom_point(data = subset(dat3, Group == special_series),
              aes(Year, Response_variable/100), size = 1, color = pal[max(n_lev)]) +
   scale_y_continuous(sec.axis = sec_axis(~.*100, name = y_axis2), 
                      expand = c(0, 0), breaks = scales::pretty_breaks(n = 5),
-                     limits = c(0, max_yax)) 
+                     limits = c(0, max_yax)) +
+  theme(axis.title.y = element_text(angle = c(90, 0), hjust = 1))
 
 ```
 
@@ -389,7 +397,7 @@ Now save the file (to your working directory)
 ggsave("Fig_3.tiff", plot = p3f, dpi = 300, width = 8, height = 8, units = "cm")
 ```
 
-This is not a very straightforward plot to make. First you need to manually find a value that scales the differnt units so they become close (see above when making p3f). When scaling back you need to verify all the data-points are within the plot range (which now is manual! By default it's based on your data but we need to bypass that). Also, in order to inheret the legend, we need at least one geom with all data we want in the legend. This is geom_line in the above case. In order to not get a gigantic primary y-axis, we set it manually and simple plot the series that is on a different scale outside the plot window. So, many things to keep in mind when/if adapting this code to your data!
+This is not a very straightforward plot to make. First you need to manually find a value that scales the different units so they become close (see above when making p3f). When scaling back you need to verify all the data-points are within the plot range (which now is manual! By default it's based on your data but we need to bypass that). Also, in order to inheret the legend, we need at least one geom with all data we want in the legend. This is geom_line in the above case. In order to not get a gigantic primary y-axis, we set it manually and simple plot the series that is on a different scale outside the plot window. So, many things to keep in mind when/if adapting this code to your data!
 
 
 ## Fig. 4. Landings by country
