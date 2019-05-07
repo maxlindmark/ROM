@@ -45,7 +45,7 @@ I have chosen data for freshwater pike (*Esox lucious*) and Baltic turbot (*Scop
 ## How do I use this for my species?
 Most basic RoM figures that all species have in some form can be grouped into different categories. Each category will have its own script. Once you identify the best category for your species you should not have to modify the actual plotting code that much, as a minimum you only have to:
 
-(**1**) Pre-define your variables (set y-axis names) and (**2**) If a multi-series plot: put hash tags in front of stuff you don't need! E.g. if you don't have points to plot, make sure to put a hash tag before the geom_point()-function, which plots points. But do not worry! Instructions for how to do that will be in the described below! 
+(**1**) Pre-define your variables (set y-axis names), (**2**) Prepare your data in the right format (see examples below and do the same for your species), (**3**) If a multi-series plot: put hash tags in front of stuff you don't need! E.g. if you don't have points to plot, make sure to put a hash tag before the geom_point()-function, which plots points. But do not worry! Instructions for how to do that will be in the described below! 
 
 The categories are:
 
@@ -54,7 +54,7 @@ The categories are:
 + Fig. 3. Multiple series and y-axes
 + Fig. 4. Landings-by-country
 
-Once you know which plot-type you want, make sure you follow how the data should be structured in your csv-file, and load the theme (see "Define *ggplot* theme").
+Once you know which plot-type you want, make sure you follow how the data should be structured in your csv-file, and load the theme (see "*Define ggplot theme*").
 
 # Preparation
 ## Load libraries
@@ -453,7 +453,7 @@ p4 <- ggplot(tur_l, aes(x = Year, y = landningar/1000, fill = land)) +
                                                      # the default in the RoM-theme  
 ```
 
-```{r plot 4, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Landings of turbot in the Baltic Sea - example of a single-series plot using R'}
+```{r plot 4, fig.width = 3.14961, fig.height = 3.14961, echo = FALSE, fig.align='center', fig.cap='Landings of turbot in the Baltic Sea - example of a landings-by-country plot using R'}
 p4
 ```
 
