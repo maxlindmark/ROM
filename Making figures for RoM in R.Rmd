@@ -332,6 +332,10 @@ dat3$Response_variable <- ifelse(dat3$Group == "Fritidsfiske",
                                  dat3$Response_variable * 100,
                                  dat3$Response_variable)
 
+## And the errorbars... 
+dat3$error_minus <- dat3$error_minus * 100
+dat3$error_plus <- dat3$error_plus * 100
+
 # Define plot settings again
 y_axis <- c("Landningar (ton)")
 y_axis2 <- c("Fångst per ansträngning (antal/timme)") #2nd axis title
@@ -341,7 +345,8 @@ special_series <- c("Fritidsfiske") # This series must be drawn with points, so 
                                     # separate it from the rest.  
 
 # Define temporary maximum of primary y-axis
-max_yax <- max(subset(dat3, Group == main_series, na.rm = TRUE)$Response_variable)*1.2
+max_yax <- max(na.omit(subset(dat3, Group == main_series))$Response_variable,
+               na.omit(subset(dat3, Group == special_series))$error_plus/100)*1.2
 ```
 
 And with that set, we can make the second figure, with multiple levels. Hashtag geom_point and geom_errorbar as these are no longer on the same scale.
@@ -358,7 +363,7 @@ p3 <- ggplot(dat3, aes(Year, Response_variable, color = Group)) +
 #geom_errorbar(data = dat, aes(x = Year, ymin = error_minus, ymax = error_plus, 
 #                              color = Group), 
 #              show.legend = FALSE, width  = 1) +
-  scale_alpha_manual(values = c(rep(1, (n_lev-1)), 0)) + 
+  scale_alpha_manual(values = c(0, rep(1, (n_lev-2)), 0)) + 
   scale_color_manual(values = pal[seq(1, n_lev)]) +
   labs(x = "", y = y_axis) +
   guides(fill  = FALSE,
@@ -381,11 +386,14 @@ Now the trick is to first transform the variable that is to be plotted on the se
 p3f <- p3 + 
   geom_point(data = subset(dat3, Group == special_series),
              aes(Year, Response_variable/100), size = 1, color = pal[max(n_lev)]) +
+  
+  geom_errorbar(data = subset(dat3, Group == special_series),
+                aes(x = Year, ymin = (error_minus/100), ymax = (error_plus/100),
+                    color = Group), show.legend = FALSE, width  = 1) +
+
   scale_y_continuous(sec.axis = sec_axis(~.*100, name = y_axis2), 
                      expand = c(0, 0), breaks = scales::pretty_breaks(n = 5),
-                     limits = c(0, max_yax)) +
-  theme(axis.title.y = element_text(angle = c(90, 0), hjust = 1))
-
+                     limits = c(0, max_yax))
 ```
 
 ```{r plot 3, fig.width=3.14961,fig.heigh=3.14961,echo=FALSE,fig.align='center',warning=FALSE,fig.cap='Gädda in the Great Lakes with secondary y-axes- example of a multiple-series plot using R'}
@@ -395,6 +403,7 @@ p3f
 Now save the file (to your working directory)
 ```{r save p3, message=FALSE,warning=FALSE,results="hide"}
 ggsave("Fig_3.tiff", plot = p3f, dpi = 300, width = 8, height = 8, units = "cm")
+tail(dat3)
 ```
 
 This is not a very straightforward plot to make. First you need to manually find a value that scales the different units so they become close (see above when making p3f). When scaling back you need to verify all the data-points are within the plot range (which now is manual! By default it's based on your data but we need to bypass that). Also, in order to inheret the legend, we need at least one geom with all data we want in the legend. This is geom_line in the above case. In order to not get a gigantic primary y-axis, we set it manually and simple plot the series that is on a different scale outside the plot window. So, many things to keep in mind when/if adapting this code to your data!
